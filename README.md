@@ -24,6 +24,10 @@ uvicorn app.main:app --reload
 ```
 
 ### Docker:
+##### Need to change directory to ./docker before executing commands below
+```bash
+cd ./docker
+```
 ###### Build Docker Image
 ```bash
 docker build -t authsureapi .
