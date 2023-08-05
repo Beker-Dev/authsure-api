@@ -2,7 +2,7 @@ import os
 import importlib
 from fastapi import APIRouter
 
-router = APIRouter()
+router = APIRouter(prefix='/api')
 
 current_directory = os.path.dirname(__file__)
 

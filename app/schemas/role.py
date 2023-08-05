@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
 
 
@@ -15,9 +15,9 @@ class RoleUpdate(RoleBase):
 
 
 class RoleShow(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
