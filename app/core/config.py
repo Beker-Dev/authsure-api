@@ -1,7 +1,6 @@
-import secrets
-from typing import Any, Dict, List, Optional, Union
-from pydantic import AnyHttpUrl, field_validator, FieldValidationInfo
-from pydantic_settings import BaseSettings
+from typing import List, Optional, Type
+from pydantic import field_validator, FieldValidationInfo
+from pydantic_settings import BaseSettings, DotEnvSettingsSource, PydanticBaseSettingsSource
 
 
 class Settings(BaseSettings):
@@ -25,9 +24,16 @@ class Settings(BaseSettings):
         db = info.data.get("POSTGRES_DB")
         return f"postgresql+psycopg2://{user}:{password}@{server}:{port}/{db}"
 
-    class Config:
-        case_sensitive = True
-        env_file = ".env"
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls: Type[BaseSettings],
+        init_settings: PydanticBaseSettingsSource,
+        env_settings: PydanticBaseSettingsSource,
+        dotenv_settings: PydanticBaseSettingsSource,
+        file_secret_settings: PydanticBaseSettingsSource,
+    ) -> tuple[PydanticBaseSettingsSource, ...]:
+        return (DotEnvSettingsSource(settings_cls=settings_cls, case_sensitive=True, env_file=".env"),)
 
 
 settings = Settings()
