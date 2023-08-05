@@ -3,6 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.routes import router
 from app.core.config import settings
+from app.database.db import engine
+from app.database.models.base import Base
+
+
+def assemble_database():
+    Base.metadata.create_all(bind=engine)
 
 
 def get_application():
@@ -16,6 +22,7 @@ def get_application():
         allow_headers=["*"],
     )
     _app.include_router(router)
+    assemble_database()
     return _app
 
 
