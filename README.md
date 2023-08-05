@@ -24,13 +24,9 @@ uvicorn app.main:app --reload
 ```
 
 ### Docker:
-##### Need to change directory to ./docker before executing commands below
-```bash
-cd ./docker
-```
 ###### Build Docker Image
 ```bash
-docker build -t authsureapi .
+docker build -t authsureapi . -f ./docker/Dockerfile
 ```
 ###### Run Docker Container
 ```bash
@@ -38,5 +34,5 @@ docker run -d --name authsureapi -p 8000:8000 authsureapi
 ```
 ###### Run Docker Compose
 ```bash
-docker-compose up -d
+docker-compose -f ./docker/docker-compose.yaml up -d
 ```

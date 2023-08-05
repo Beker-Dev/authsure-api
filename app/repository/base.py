@@ -4,7 +4,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi import HTTPException
 from pydantic import BaseModel
 
-from app.database.db import Base
+from app.database.models.base import Base
 
 
 ModelType = TypeVar("ModelType", bound=Base)
