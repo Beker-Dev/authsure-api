@@ -1,4 +1,3 @@
-import os
 import sys
 
 
@@ -13,5 +12,6 @@ def set_test_environments():
             'POSTGRES_PORT': '5434',
             'POSTGRES_DB': 'postgres'
         }
-
-        {os.environ.setdefault(k, v) for k, v in environments.items()}
+        with open('.env', 'w') as f:
+            for k, v in environments.items():
+                f.write(f'{k}={v}\n')
