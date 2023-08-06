@@ -6,7 +6,7 @@ dotenv.load_dotenv()
 
 environments = {
     'PROJECT_NAME': 'AuthSureApi',
-    'BACKEND_CORS_ORIGINS': [],
+    'BACKEND_CORS_ORIGINS': '[]',
     'POSTGRES_USER': 'postgres',
     'POSTGRES_PASSWORD': 'postgres',
     'POSTGRES_SERVER': 'database',
