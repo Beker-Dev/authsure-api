@@ -10,7 +10,7 @@ environments = {
     'POSTGRES_USER': 'postgres',
     'POSTGRES_PASSWORD': 'postgres',
     'POSTGRES_SERVER': 'database',
-    'POSTGRES_PORT': 5434,
+    'POSTGRES_PORT': '5434',
     'POSTGRES_DB': 'postgres'
 }
 
