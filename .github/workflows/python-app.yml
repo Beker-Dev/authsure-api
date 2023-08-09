@@ -9,14 +9,6 @@ on:
 permissions:
   contents: read
 
-variables:
-    POSTGRES_USER: postgres
-    POSTGRES_PASSWORD: postgres
-    POSTGRES_DB: postgres
-    POSTGRES_EXTERNAL_PORT: 5434
-    POSTGRES_INTERNAL_PORT: 5432
-    POSTGRES_OPTIONS: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -24,12 +16,12 @@ jobs:
       database:
         image: postgres
         env:
-          POSTGRES_USER: $POSTGRES_USER
-          POSTGRES_PASSWORD: $POSTGRES_PASSWORD
-          POSTGRES_DB: $POSTGRES_DB
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
         ports:
-          - $POSTGRES_EXTERNAL_PORT:$POSTGRES_INTERNAL_PORT
-        options: $POSTGRES_OPTIONS
+          - 5434:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python 3.10
@@ -48,12 +40,12 @@ jobs:
       database:
         image: postgres
         env:
-          POSTGRES_USER: $POSTGRES_USER
-          POSTGRES_PASSWORD: $POSTGRES_PASSWORD
-          POSTGRES_DB: $POSTGRES_DB
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
         ports:
-          - $POSTGRES_EXTERNAL_PORT:$POSTGRES_INTERNAL_PORT
-        options: $POSTGRES_OPTIONS
+          - 5434:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python 3.10
