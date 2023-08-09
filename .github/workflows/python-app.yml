@@ -9,19 +9,27 @@ on:
 permissions:
   contents: read
 
+variables:
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+    POSTGRES_DB: postgres
+    POSTGRES_EXTERNAL_PORT: 5434
+    POSTGRES_INTERNAL_PORT: 5432
+    POSTGRES_OPTIONS: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
 jobs:
-  setup-python:
+  build:
     runs-on: ubuntu-latest
     services:
       database:
         image: postgres
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: postgres
+          POSTGRES_USER: $POSTGRES_USER
+          POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+          POSTGRES_DB: $POSTGRES_DB
         ports:
-          - 5434:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+          - $POSTGRES_EXTERNAL_PORT:$POSTGRES_INTERNAL_PORT
+        options: $POSTGRES_OPTIONS
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python 3.10
@@ -33,22 +41,30 @@ jobs:
           python -m pip install --upgrade pip
           pip install flake8 pytest
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-  
-
-  build:
-    runs-on: ubuntu-latest
-    needs: setup-python
-    steps:
-      - name: Build the application
-        run: |
-          # Additional build steps here
-          echo "Running build steps..."
-          # For example, you could build binaries, compile assets, etc.
 
   test:
     runs-on: ubuntu-latest
-    needs: setup-python
+    services:
+      database:
+        image: postgres
+        env:
+          POSTGRES_USER: $POSTGRES_USER
+          POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+          POSTGRES_DB: $POSTGRES_DB
+        ports:
+          - $POSTGRES_EXTERNAL_PORT:$POSTGRES_INTERNAL_PORT
+        options: $POSTGRES_OPTIONS
     steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Lint with flake8
         run: |
           # stop the build if there are Python syntax errors or undefined names
