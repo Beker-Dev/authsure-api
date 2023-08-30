@@ -9,4 +9,4 @@ class User(Base):
     username = Column(String(100), nullable=False, unique=True)
     password = Column(String(255), nullable=False)
     email = Column(String(255), nullable=False, unique=True)
-    # realm_id = Column(Integer, ForeignKey('realm.id'))
+    realm_id = Column(Integer, ForeignKey('realm.id'))
