@@ -15,5 +15,5 @@ class TestRole(TestBase):
         super().tearDown()
 
     def test_show_roles(self):
-        response = self.client.get(self.url)
+        response = self.client.get(self.url, headers={"Authorization": f"Bearer {self.token}"})
         self.assertEqual(response.status_code, 200)
