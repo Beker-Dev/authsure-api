@@ -30,20 +30,21 @@ from app.database.models.base import Base
 
 
 def auto_import_models() -> None:
-    # Specify the package containing the models
-    models_package = "app.database.models"
+    for models_package in ["app.database.models", "app.database.relationship"]:
+        # Specify the package containing the models
+        # models_package = "app.database.models"
 
-    # Import package
-    package = import_module(models_package)
+        # Import package
+        package = import_module(models_package)
 
-    # Loop through all the modules in the package
-    for _, module_name, _ in pkgutil.iter_modules(package.__path__):
-        # Form the full module name and import the module
-        full_module_name = f"{models_package}.{module_name}"
-        models_module = import_module(full_module_name)
+        # Loop through all the modules in the package
+        for _, module_name, _ in pkgutil.iter_modules(package.__path__):
+            # Form the full module name and import the module
+            full_module_name = f"{models_package}.{module_name}"
+            models_module = import_module(full_module_name)
 
-        # Debugging
-        print(f"ALEMBIC | Successfully imported module: {full_module_name}")
+            # Debugging
+            print(f"ALEMBIC | Successfully imported module: {full_module_name}")
 
 
 # Call the auto_import_models function
