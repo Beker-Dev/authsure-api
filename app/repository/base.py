@@ -18,7 +18,9 @@ class RepositoryBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         self.model = model
 
     @handle_session
-    def get_by(self, db: Session, filters: dict) -> Optional[ModelType]:
+    def get_by(self, db: Session, filters: dict, all: bool = False) -> Optional[ModelType]:
+        if all:
+            return db.query(self.model).filter_by(**filters).all()
         return db.query(self.model).filter_by(**filters).first()
 
     @handle_session
