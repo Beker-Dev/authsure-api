@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.utils.tests import set_test_environments
 set_test_environments()
@@ -8,7 +9,7 @@ from app.routes import router
 from app.core.config import settings
 from app.database.db import engine
 from app.database.models.base import Base
-
+from app.routes.middlewares.authentication import Authentication
 
 def assemble_database():
     Base.metadata.create_all(bind=engine)
@@ -24,8 +25,10 @@ def get_application():
         allow_methods=["*"],
         allow_headers=["*"],
     )
+    _app.add_middleware(BaseHTTPMiddleware, dispatch=Authentication())
     _app.include_router(router)
     assemble_database()
     return _app
+
 
 app = get_application()
