@@ -5,6 +5,7 @@ from fastapi import HTTPException
 from pydantic import BaseModel
 
 from app.database.models.base import Base
+from app.utils.repository_utils.database_handler import handle_session
 
 
 ModelType = TypeVar("ModelType", bound=Base)
@@ -16,23 +17,28 @@ class RepositoryBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def __init__(self, model: Type[ModelType]):
         self.model = model
 
+    @handle_session
     def get_by(self, db: Session, filters: dict) -> Optional[ModelType]:
         return db.query(self.model).filter_by(**filters).first()
 
+    @handle_session
     def get(self, db: Session, id: Any) -> Optional[ModelType]:
         return db.query(self.model).filter(self.model.id == id).first()
 
+    @handle_session
     def get_or_404(self, db: Session, id: Any) -> Optional[ModelType]:
         db_query = db.query(self.model).filter(self.model.id == id).first()
         if not db_query:
             raise HTTPException(404, f"{self.model.__name__} not found")
         return db_query
 
+    @handle_session
     def get_multi(
         self, db: Session, skip: int = 0, limit: int = 100
     ) -> List[ModelType]:
         return db.query(self.model).offset(skip).limit(limit).all()
 
+    @handle_session
     def create(self, db: Session, obj_in: CreateSchemaType) -> ModelType:
         obj_in_data = jsonable_encoder(obj_in)
         db_obj = self.model(**obj_in_data)
@@ -41,6 +47,7 @@ class RepositoryBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db.refresh(db_obj)
         return db_obj
 
+    @handle_session
     def create_with_association(
         self, db: Session, obj_in: CreateSchemaType
     ) -> ModelType:
@@ -50,6 +57,7 @@ class RepositoryBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db.refresh(db_obj)
         return db_obj
 
+    @handle_session
     def update(
         self,
         db: Session,
@@ -70,6 +78,7 @@ class RepositoryBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db.refresh(db_obj)
         return db_obj
 
+    @handle_session
     def remove(self, db: Session, id: int) -> ModelType:
         obj = db.query(self.model).get(id)
         db.delete(obj)
