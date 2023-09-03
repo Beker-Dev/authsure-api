@@ -10,4 +10,4 @@ class Client(Base):
     description = Column(Text, nullable=True)
     key = Column(String(50), nullable=False)
     secret = Column(String(255), nullable=False)
-    realm_id = Column(Integer, ForeignKey('realm.id'))
+    realm_id = Column(Integer, ForeignKey('realm.id'), nullable=False)
