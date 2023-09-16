@@ -36,3 +36,7 @@ docker run -d --name authsureapi -p 8000:8000 authsureapi
 ```bash
 docker-compose -f ./docker/docker-compose.yaml up -d
 ```
+###### Run Docker Compose in Debug Mode
+```bash
+docker-compose -f ./docker/docker-compose-debug.yaml up --build
+```
