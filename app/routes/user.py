@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 
-from app.core.dependencies import get_db, CurrentUser
+from app.core.dependencies import get_db
 from app.repository.user import user_repository
 from app.schemas.user import UserShow, UserCreate, UserUpdate, UserPasswordUpdate
 from app.utils.hash_utils.password import Password
@@ -11,7 +11,6 @@ from app.utils.database_utils import PopulateDatabase
 
 class UserRouter:
     def __init__(self):
-        self.current_user = CurrentUser()
         self.router = APIRouter(tags=['Users'], prefix='/users')
         self.router.add_api_route("", self.show_users, response_model=List[UserShow], methods=["GET"])
         self.router.add_api_route("/{id}", self.show_user, response_model=UserShow, methods=["GET"])

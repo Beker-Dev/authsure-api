@@ -15,7 +15,6 @@ class AuthenticationRouter:
         self.router = APIRouter(tags=['Authentication'])
         self.router.add_api_route("/login", self.login, methods=["POST"])
         self.router.add_api_route("/logout", self.logout, methods=["POST"])
-        self.router.add_api_route("/login_test", self.login_test, methods=["POST"])
 
     def login(self, user: AuthenticationLogin, db: Session = Depends(get_db)):
         db_user = user_repository.find_by_authentication_login(db, user)
