@@ -13,7 +13,7 @@ class Authentication:
         self.jwt = JWT()
 
     async def __call__(self, request: Request, call_next: Callable) -> Response:
-        bypass_routes = ['/docs', '/openapi.json', '/api/login']
+        bypass_routes = ['/docs', '/openapi.json', 'api/auth/login', '/api/auth/refresh']
 
         if request.url.path in bypass_routes:
             return await call_next(request)

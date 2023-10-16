@@ -1,8 +1,11 @@
 import os
 import importlib
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
-router = APIRouter(prefix='/api')
+from app.core.dependencies import auth_security
+
+
+router = APIRouter(prefix='/api', dependencies=[Depends(auth_security)])
 
 current_directory = os.path.dirname(__file__)
 
