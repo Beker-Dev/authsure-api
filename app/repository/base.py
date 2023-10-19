@@ -6,6 +6,7 @@ from pydantic import BaseModel
 
 from app.database.models.base import Base
 from app.utils.repository_utils.database_handler import handle_session
+from app.utils.database_utils.filters import Filter, FilterJoin
 
 
 ModelType = TypeVar("ModelType", bound=Base)
@@ -16,6 +17,40 @@ UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel)
 class RepositoryBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def __init__(self, model: Type[ModelType]):
         self.model = model
+
+    @handle_session
+    def get_by_join(
+            self,
+            db: Session,
+            filters: List[Filter] = None,
+            filters_join: List[FilterJoin] = None,
+            order_by=None,
+    ):
+        query_filters = []
+
+        if filters is not None:
+            for filter in filters:
+                filter_conditions = [
+                    getattr(self.model, filter.key) == value for value in filter.values
+                ]
+                query_filters.append(or_(*filter_conditions))
+        query_filters = and_(*query_filters)
+
+        query = db.query(self.model)
+        if filters_join is not None:
+            for filter in filters_join:
+                query = query.join(filter.class_, filter.class_attr == filter.join_attr)
+                filter_conditions = (
+                    [
+                        getattr(filter.class_, filter.class_key) == value
+                        for value in filter.values
+                    ]
+                    if filter.values
+                    else []
+                )
+                query_filters = and_(query_filters, or_(*filter_conditions))
+
+        return query.filter(query_filters).order_by(order_by).all()
 
     @handle_session
     def get_by(self, db: Session, filters: dict, all: bool = False) -> Optional[ModelType]:
