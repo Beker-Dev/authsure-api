@@ -13,11 +13,12 @@ class Authentication:
         self.jwt = JWT()
 
     async def __call__(self, request: Request, call_next: Callable) -> Response:
-        bypass_routes = ['/docs', '/openapi.json', 'api/auth/login', '/api/auth/refresh']
+        bypass_routes = ['/docs', '/openapi.json', '/api/auth/login', '/api/auth/refresh']
 
         if request.url.path in bypass_routes:
+            print('bypass')
             return await call_next(request)
-
+        print('check token')
         try:
             token = request.headers.get('authorization').split('Bearer ')[1]
             self.jwt.jwt_token_validator(token)
