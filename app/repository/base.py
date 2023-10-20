@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 from app.database.models.base import Base
 from app.utils.repository_utils.database_handler import handle_session
-from app.utils.database_utils.filters import Filter, FilterJoin
+from app.utils.repository_utils.filters import Filter, FilterJoin
 
 
 ModelType = TypeVar("ModelType", bound=Base)
