@@ -25,7 +25,7 @@ def get_application():
         allow_methods=["*"],
         allow_headers=["*"],
     )
-    _app.add_middleware(BaseHTTPMiddleware, dispatch=Authentication())
+    # _app.add_middleware(BaseHTTPMiddleware, dispatch=Authentication())
     _app.include_router(router)
     assemble_database()
     return _app

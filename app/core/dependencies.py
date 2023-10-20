@@ -1,6 +1,6 @@
 from typing import Any, Generator, Dict
 from fastapi import Depends, HTTPException
-from fastapi.security import OAuth2PasswordBearer, OAuth2, OAuth2PasswordRequestForm, OAuth2PasswordRequestFormStrict, OAuth2AuthorizationCodeBearer
+from fastapi.security import OAuth2PasswordBearer
 
 from app.database.db import SessionLocal
 from app.database.models.user import User
