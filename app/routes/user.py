@@ -7,11 +7,12 @@ from app.repository.user import user_repository
 from app.schemas.user import UserShow, UserCreate, UserUpdate, UserPasswordUpdate
 from app.utils.hash_utils.password import Password
 from app.utils.database_utils import PopulateDatabase
+from app.core.dependencies import auth_security
 
 
 class UserRouter:
     def __init__(self):
-        self.router = APIRouter(tags=['Users'], prefix='/users')
+        self.router = APIRouter(tags=['Users'], prefix='/users', dependencies=[Depends(auth_security)])
         self.router.add_api_route("", self.show_users, response_model=List[UserShow], methods=["GET"])
         self.router.add_api_route("/{id}", self.show_user, response_model=UserShow, methods=["GET"])
         self.router.add_api_route("", self.create_user, response_model=UserShow, methods=["POST"])

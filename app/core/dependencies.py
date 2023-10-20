@@ -1,13 +1,21 @@
 from typing import Any, Generator, Dict
 from fastapi import Depends, HTTPException
+from fastapi.security import OAuth2PasswordBearer
 
 from app.database.db import SessionLocal
 from app.database.models.user import User
 
 
+OAUTH2_SCHEME = OAuth2PasswordBearer(tokenUrl='/api/auth/login')
+
+
 def get_db() -> Generator:
     with SessionLocal() as session:
         yield session
+
+
+def auth_security(token: str = Depends(OAUTH2_SCHEME)) -> str:
+    return token
 
 
 class CurrentUser:

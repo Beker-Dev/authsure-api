@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 from jose import jwt
 
+from app.schemas.authentication import Token
+
 
 class JWT:
     def __init__(
@@ -33,15 +35,15 @@ class JWT:
     def jwt_token_validator(self, token: str) -> dict:
         return jwt.decode(token, self.__secret_key, algorithms=[self.__algorithm])
 
-    def get_token(self, payload: dict = None) -> dict:
+    def get_token(self, payload: dict = None) -> Token:
         access_token = self.__generate_access_token(payload)
         refresh_token = self.__generate_refresh_token(payload)
-        return {'access': access_token, 'refresh': refresh_token, 'token_type': 'bearer'}
+        return Token(access=access_token, refresh=refresh_token, token_type='bearer')
 
-    def refresh_token(self, refresh_token: str) -> dict:
+    def refresh_token(self, refresh_token: str) -> Token:
         refresh_token_payload = self.jwt_token_validator(refresh_token)
         if refresh_token_payload.get('type') != 'refresh':
             raise jwt.JWTError('Invalid Token')
         else:
             access_token = self.__generate_access_token(refresh_token_payload)
-            return {'access': access_token, 'refresh': refresh_token, 'token_type': 'bearer'}
+            return Token(access=access_token, refresh=refresh_token, token_type='bearer')
