@@ -84,19 +84,17 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-1
         aws-session-token: ${{ secrets.AWS_TOKEN }}
-
-    - name: Login on Amazon ECR
-      id: login-ecr
-      run: |
-        aws ecr get-login-password --region us-east-1   | docker login --username AWS --password-stdin 953551518116.dkr.ecr.us-east-1.amazonaws.com
-
+      
     - name: Construir, adicionar tag e enviar imagem para o Amazon ECR
       env:
         ECR_REGISTRY: ${{ secrets.AWS_URL }}
         ECR_REPOSITORY: ${{ secrets.AWS_IMAGE }}
       run: |
+        aws ecr get-login-password --region us-east-1   | docker login --username AWS --password-stdin $ECR_REPOSITORY
+
+    - name: Login on Amazon ECR
+      id: login-ecr
+      run: |
         docker build -t $ECR_REPOSITORY .
         docker tag $ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
-    
-  
