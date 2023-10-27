@@ -1,5 +1,5 @@
-from fastapi import Request, Response, Depends
-
+from fastapi import Request, Depends
+from fastapi.responses import JSONResponse
 from typing import Callable
 
 from app.utils.authentication.jwt import JWT
@@ -12,7 +12,7 @@ class Authentication:
         self.current_user = CurrentUser()
         self.jwt = JWT()
 
-    async def __call__(self, request: Request, call_next: Callable) -> Response:
+    async def __call__(self, request: Request, call_next: Callable) -> JSONResponse:
         bypass_routes = ['/docs', '/openapi.json', '/api/auth/login', '/api/auth/refresh']
 
         if request.url.path in bypass_routes:
@@ -27,6 +27,6 @@ class Authentication:
             if not session or not session.is_active:
                 raise Exception
         except:
-            return Response(content='Invalid Token', status_code=401)
+            return JSONResponse(content='Invalid Token', status_code=401)
         else:
             return await call_next(request)
