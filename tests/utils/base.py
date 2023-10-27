@@ -22,7 +22,7 @@ class TestBase(TestCase):
         self.db_instance = next(get_db())
         self.default_user = create_default_user(self.db_instance)
         self.token = self.client.post(
-            '/api/login',
+            '/api/auth/login',
             json={"username": self.default_user.username, "password": "admin.admin"}
         ).json()['access']
 
