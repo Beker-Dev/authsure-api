@@ -71,7 +71,7 @@ jobs:
   deploy:
     # name: Building AuthsureApi Image
     runs-on: ubuntu-latest
-    needs: test
+    # needs: test
     
     steps:
     - name: Check code
