@@ -68,43 +68,43 @@ jobs:
         run: |
           pytest -s -v
           
-  deploy:
-    # name: Building AuthsureApi Image
-    runs-on: ubuntu-latest
-    needs: test
+  # deploy:
+  #   # name: Building AuthsureApi Image
+  #   runs-on: ubuntu-latest
+  #   needs: test
     
-    steps:
-    - name: Check code
-      uses: actions/checkout@v2
+  #   steps:
+  #   - name: Check code
+  #     uses: actions/checkout@v2
 
-    - name: Configuring AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1
-        aws-session-token: ${{ secrets.AWS_TOKEN }}
+  #   - name: Configuring AWS credentials
+  #     uses: aws-actions/configure-aws-credentials@v1
+  #     with:
+  #       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #       aws-region: us-east-1
+  #       aws-session-token: ${{ secrets.AWS_TOKEN }}
       
-    - name: Fazer login no Amazon ECR
-      id: login-ecr
-      run: |
-        aws ecr get-login-password --region us-east-1   | docker login --username AWS --password-stdin ${{ secrets.AWS_URL }}
+  #   - name: Fazer login no Amazon ECR
+  #     id: login-ecr
+  #     run: |
+  #       aws ecr get-login-password --region us-east-1   | docker login --username AWS --password-stdin ${{ secrets.AWS_URL }}
 
-    - name: Criar arquivo .env
-      run: |
-        echo "PROJECT_NAME=${{ secrets.PROJECT_NAME }}" >> .env
-        echo "BACKEND_CORS_ORIGINS=${{ secrets.BACKEND_CORS_ORIGINS }}" >> .env
-        echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
-        echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
-        echo "POSTGRES_SERVER=${{ secrets.POSTGRES_SERVER }}" >> .env
-        echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> .env
-        echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env
+  #   - name: Criar arquivo .env
+  #     run: |
+  #       echo "PROJECT_NAME=${{ secrets.PROJECT_NAME }}" >> .env
+  #       echo "BACKEND_CORS_ORIGINS=${{ secrets.BACKEND_CORS_ORIGINS }}" >> .env
+  #       echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
+  #       echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
+  #       echo "POSTGRES_SERVER=${{ secrets.POSTGRES_SERVER }}" >> .env
+  #       echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> .env
+  #       echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env
     
-    - name: Construir, adicionar tag e enviar imagem para o Amazon ECR
-      env:
-        ECR_REGISTRY: ${{ secrets.AWS_URL }}
-        ECR_REPOSITORY: ${{ secrets.AWS_IMAGE }}
-      run: |
-        docker build -f ./docker/Dockerfile -t $ECR_REPOSITORY .
-        docker tag $ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+  #   - name: Construir, adicionar tag e enviar imagem para o Amazon ECR
+  #     env:
+  #       ECR_REGISTRY: ${{ secrets.AWS_URL }}
+  #       ECR_REPOSITORY: ${{ secrets.AWS_IMAGE }}
+  #     run: |
+  #       docker build -f ./docker/Dockerfile -t $ECR_REPOSITORY .
+  #       docker tag $ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
+  #       docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
