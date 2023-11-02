@@ -97,6 +97,17 @@ class PopulateDatabase:
                 realm_repository.create(self.db_session, obj_in=realm)
             )
 
+    def __populate_user_admin(self):
+        user = UserCreate(
+            username="admin",
+            email="admin.admin@email.com",
+            password="admin",
+            realm_id=random.choice(self.realms).id
+        )
+        self.users.append(
+            user_repository.create(self.db_session, obj_in=user)
+        )
+
     def populate(self, reset: bool = False):
         self.__reset_database() if reset else ...
 
@@ -106,6 +117,7 @@ class PopulateDatabase:
             self.__populate_roles,
             self.__populate_groups,
             self.__populate_users,
+            self.__populate_user_admin,
             self.__populate_sessions,
         ]
 
