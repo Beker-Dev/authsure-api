@@ -6,13 +6,14 @@ from app.schemas.authentication import AuthenticationLogin, Token
 from app.repository.user import user_repository
 from app.repository.session import session_repository
 from app.schemas.session import SessionCreate
-from app.core.dependencies import get_db, CurrentUser
+from app.schemas.user import CurrentUser
+from app.core.dependencies import get_db
 from app.utils.authentication.jwt import JWT
+from app.core.dependencies import auth_security
 
 
 class AuthenticationRouter:
     def __init__(self):
-        self.current_user = CurrentUser()
         self.router = APIRouter(tags=['Authentication'], prefix='/auth')
         self.router.add_api_route("/login", self.login, methods=["POST"])
         self.router.add_api_route("/logout", self.logout, methods=["POST"])
@@ -28,14 +29,14 @@ class AuthenticationRouter:
 
         return token
 
-    async def logout(self, db: Session = Depends(get_db)) -> None:
-        user_id = JWT().jwt_token_validator(self.current_user.token).get('user_id')
+    async def logout(self, db: Session = Depends(get_db), current_user: CurrentUser = Depends(auth_security)) -> None:
+        user_id = JWT().jwt_token_validator(current_user.token).get('user_id')
         session_repository.inactivate_all_active_sessions_by_user_id(db, user_id)
 
-    async def refresh(self, refresh_token: Token) -> Token:
+    async def refresh(self, refresh_token: Token, current_user: CurrentUser = Depends(auth_security)) -> Token:
         try:
             token = JWT().refresh_token(refresh_token.refresh)
-            self.current_user.token = token.access
+            current_user.token = token.access
             return token
         except JWTError as e:
             raise HTTPException(status_code=403, detail=str(e))

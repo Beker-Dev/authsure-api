@@ -38,3 +38,7 @@ class UserShow(BaseModel):
     created_at: datetime
     updated_at: datetime
 
+
+class CurrentUser(BaseModel):
+    user: UserShow
+    token: str
