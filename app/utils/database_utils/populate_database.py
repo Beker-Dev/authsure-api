@@ -101,7 +101,7 @@ class PopulateDatabase:
         user = UserCreate(
             username="admin",
             email="admin.admin@email.com",
-            password="admin",
+            password="admin.admin",
             realm_id=random.choice(self.realms).id
         )
         self.users.append(
