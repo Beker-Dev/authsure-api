@@ -28,3 +28,15 @@ services:
     depends_on:
       database:
         condition: service_healthy
+
+  messaging_service:
+    image: rabbitmq:3.7-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: [ "CMD", "rabbitmqctl", "status" ]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+    restart: always
