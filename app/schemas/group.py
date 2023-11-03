@@ -14,7 +14,7 @@ class GroupUpdate(GroupBase):
     pass
 
 
-class GroupShow(BaseModel):
+class GroupShow(GroupBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int

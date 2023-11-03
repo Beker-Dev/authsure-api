@@ -22,6 +22,14 @@ class UserUpdate(UserBase):
     pass
 
 
+class UserShow(UserBase):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    created_at: datetime
+    updated_at: datetime
+
+
 class UserPasswordUpdate(BaseModel):
     old_password: str = Field(min_length=8, max_length=100)
     new_password: str = Field(min_length=8, max_length=100)
@@ -29,14 +37,6 @@ class UserPasswordUpdate(BaseModel):
     @field_validator('new_password')
     def encrypt_password(cls, v):
         return Password.encrypt(v)
-
-
-class UserShow(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-
-    id: int
-    created_at: datetime
-    updated_at: datetime
 
 
 class CurrentUser(BaseModel):

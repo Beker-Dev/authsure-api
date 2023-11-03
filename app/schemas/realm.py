@@ -14,7 +14,7 @@ class RealmUpdate(RealmBase):
     pass
 
 
-class RealmShow(BaseModel):
+class RealmShow(RealmBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int

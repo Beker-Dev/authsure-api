@@ -14,7 +14,7 @@ class RoleUpdate(RoleBase):
     pass
 
 
-class RoleShow(BaseModel):
+class RoleShow(RoleBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
