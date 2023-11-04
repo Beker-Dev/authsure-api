@@ -43,7 +43,7 @@ class JWT:
     def refresh_token(self, refresh_token: str) -> Token:
         refresh_token_payload = self.jwt_token_validator(refresh_token)
         if refresh_token_payload.get('type') != 'refresh':
-            raise jwt.JWTError('Invalid Token')
+            raise jwt.JWTError('Invalid Refresh Token')
         else:
             access_token = self.__generate_access_token(refresh_token_payload)
             return Token(access=access_token, refresh=refresh_token, token_type='bearer')

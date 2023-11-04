@@ -4,6 +4,7 @@ from sqlalchemy import or_, and_
 from fastapi.encoders import jsonable_encoder
 from fastapi import HTTPException
 from pydantic import BaseModel
+import math
 
 from app.database.models.base import Base
 from app.utils.repository_utils.database_handler import handle_session
@@ -75,6 +76,15 @@ class RepositoryBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         self, db: Session, skip: int = 0, limit: int = 100
     ) -> List[ModelType]:
         return db.query(self.model).offset(skip).limit(limit).all()
+
+    @handle_session
+    def get_count(self, db: Session) -> int:
+        return db.query(self.model).count()
+
+    @handle_session
+    def get_last_page(self, db: Session, limit: int) -> int:
+        results = db.query(self.model).count()
+        return math.ceil(results / limit)
 
     @handle_session
     def create(self, db: Session, obj_in: CreateSchemaType) -> ModelType:

@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
+from typing import List
 
 
 class ClientBase(BaseModel):
@@ -25,3 +26,11 @@ class ClientShow(ClientBase):
     created_at: datetime
     updated_at: datetime
 
+
+class ClientShowPaginated(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    current_page: int
+    last_page: int
+    per_page: int
+    clients: List[ClientShow]

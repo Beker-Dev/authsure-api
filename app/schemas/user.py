@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field, ConfigDict, EmailStr, field_validator
 from datetime import datetime
+from typing import List
 
 from app.utils.hash_utils import Password
 
@@ -28,6 +29,15 @@ class UserShow(UserBase):
     id: int
     created_at: datetime
     updated_at: datetime
+
+
+class UserShowPaginated(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    current_page: int
+    last_page: int
+    per_page: int
+    users: List[UserShow]
 
 
 class UserPasswordUpdate(BaseModel):

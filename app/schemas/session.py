@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
+from typing import List
 
 
 class SessionBase(BaseModel):
@@ -23,3 +24,11 @@ class SessionShow(SessionBase):
     created_at: datetime
     updated_at: datetime
 
+
+class SessionShowPaginated(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    current_page: int
+    last_page: int
+    per_page: int
+    sessions: List[SessionShow]

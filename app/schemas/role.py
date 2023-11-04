@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
+from typing import List
 
 
 class RoleBase(BaseModel):
@@ -21,3 +22,11 @@ class RoleShow(RoleBase):
     created_at: datetime
     updated_at: datetime
 
+
+class RoleShowPaginated(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    current_page: int
+    last_page: int
+    per_page: int
+    roles: List[RoleShow]
