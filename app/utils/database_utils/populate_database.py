@@ -62,7 +62,7 @@ class PopulateDatabase:
     def __populate_roles(self):
         for _ in range(self.items_per_model):
             role = RoleCreate(
-                name=self.faker.name(),
+                name=self.faker.word(),
             )
             self.roles.append(
                 role_repository.create(self.db_session, obj_in=role)
@@ -71,7 +71,7 @@ class PopulateDatabase:
     def __populate_groups(self):
         for _ in range(self.items_per_model):
             group = GroupCreate(
-                name=self.faker.name(),
+                name=self.faker.company() + "-" + self.faker.word(),
             )
             self.groups.append(
                 group_repository.create(self.db_session, obj_in=group)
@@ -80,9 +80,9 @@ class PopulateDatabase:
     def __populate_clients(self):
         for _ in range(self.items_per_model):
             client = ClientCreate(
-                name=self.faker.name(),
+                name=self.faker.company(),
                 description=self.faker.text(),
-                key=self.faker.name(),
+                key=self.faker.word(),
                 secret=self.faker.password(),
                 realm_id=random.choice(self.realms).id
             )
@@ -92,7 +92,7 @@ class PopulateDatabase:
 
     def __populate_realms(self):
         for _ in range(self.items_per_model):
-            realm = RealmCreate(name=self.faker.name())
+            realm = RealmCreate(name=self.faker.company())
             self.realms.append(
                 realm_repository.create(self.db_session, obj_in=realm)
             )
