@@ -6,6 +6,7 @@ from app.core.dependencies import get_db
 from app.repository.session import session_repository
 from app.schemas.session import SessionShow, SessionCreate, SessionUpdate
 from app.core.dependencies import auth_security
+from app.core.config import settings
 
 
 class SessionRouter:
@@ -17,8 +18,8 @@ class SessionRouter:
         self.router.add_api_route('/{id}', self.update_session, response_model=SessionShow, methods=['PUT'])
         self.router.add_api_route('/{id}', self.delete_session, response_model=SessionShow, methods=['DELETE'])
 
-    async def show_sessions(self, db: Session = Depends(get_db)):
-        return session_repository.get_multi(db)
+    async def show_sessions(self, db: Session = Depends(get_db), page: int = 1, c: int = settings.DEFAULT_PAGE_SIZE):
+        return session_repository.get_multi(db, skip=(page - 1) * c, limit=c)
 
     async def show_session(self, id: int, db: Session = Depends(get_db)):
         return session_repository.get_or_404(db, id)

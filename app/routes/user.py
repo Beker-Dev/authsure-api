@@ -8,6 +8,7 @@ from app.schemas.user import UserShow, UserCreate, UserUpdate, UserPasswordUpdat
 from app.utils.hash_utils.password import Password
 from app.utils.database_utils import PopulateDatabase
 from app.core.dependencies import auth_security
+from app.core.config import settings
 
 
 class UserRouter:
@@ -21,8 +22,8 @@ class UserRouter:
         self.router.add_api_route("/{id}", self.delete_user, response_model=UserShow, methods=["DELETE"])
         self.router.add_api_route("/recover-password", self.recover_password, methods=["POST"])
 
-    async def show_users(self, db: Session = Depends(get_db)):
-        return user_repository.get_multi(db)
+    async def show_users(self, db: Session = Depends(get_db), page: int = 1, c: int = settings.DEFAULT_PAGE_SIZE):
+        return user_repository.get_multi(db, skip=(page - 1) * c, limit=c)
 
     async def show_user(self, id: int, db: Session = Depends(get_db)):
         return user_repository.get_or_404(db, id)

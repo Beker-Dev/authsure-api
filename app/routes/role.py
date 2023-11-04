@@ -6,6 +6,7 @@ from app.core.dependencies import get_db
 from app.repository.role import role_repository
 from app.schemas.role import RoleShow, RoleCreate, RoleUpdate
 from app.core.dependencies import auth_security
+from app.core.config import settings
 
 
 class RoleRouter:
@@ -17,8 +18,8 @@ class RoleRouter:
         self.router.add_api_route('/{id}', self.update_role, response_model=RoleShow, methods=['PUT'])
         self.router.add_api_route('/{id}', self.delete_role, response_model=RoleShow, methods=['DELETE'])
 
-    async def show_roles(self, db: Session = Depends(get_db)):
-        return role_repository.get_multi(db)
+    async def show_roles(self, db: Session = Depends(get_db), page: int = 1, c: int = settings.DEFAULT_PAGE_SIZE):
+        return role_repository.get_multi(db, skip=(page - 1) * c, limit=c)
 
     async def show_role(self, id: int, db: Session = Depends(get_db)):
         return role_repository.get_or_404(db, id)

@@ -6,6 +6,7 @@ from app.core.dependencies import get_db
 from app.repository.client import client_repository
 from app.schemas.client import ClientShow, ClientCreate, ClientUpdate
 from app.core.dependencies import auth_security
+from app.core.config import settings
 
 
 class ClientRouter:
@@ -17,8 +18,8 @@ class ClientRouter:
         self.router.add_api_route("/{id}", self.update_client, response_model=ClientShow, methods=["PUT"])
         self.router.add_api_route("/{id}", self.delete_client, response_model=ClientShow, methods=["DELETE"])
 
-    async def show_clients(self, db: Session = Depends(get_db)):
-        return client_repository.get_multi(db)
+    async def show_clients(self, db: Session = Depends(get_db), page: int = 1, c: int = settings.DEFAULT_PAGE_SIZE):
+        return client_repository.get_multi(db, skip=(page - 1) * c, limit=c)
 
     async def show_client(self, id: int, db: Session = Depends(get_db)):
         return client_repository.get_or_404(db, id)

@@ -6,6 +6,7 @@ from app.core.dependencies import get_db
 from app.repository.realm import realm_repository
 from app.schemas.realm import RealmShow, RealmCreate, RealmUpdate
 from app.core.dependencies import auth_security
+from app.core.config import settings
 
 
 class RealmRouter:
@@ -17,8 +18,8 @@ class RealmRouter:
         self.router.add_api_route("/{id}", self.update_realm, response_model=RealmShow, methods=["PUT"])
         self.router.add_api_route("/{id}", self.delete_realm, response_model=RealmShow, methods=["DELETE"])
 
-    async def show_realms(self, db: Session = Depends(get_db)):
-        return realm_repository.get_multi(db)
+    async def show_realms(self, db: Session = Depends(get_db), page: int = 1, c: int = settings.DEFAULT_PAGE_SIZE):
+        return realm_repository.get_multi(db, skip=(page - 1) * c, limit=c)
 
     async def show_realm(self, id: int, db: Session = Depends(get_db)):
         return realm_repository.get_or_404(db, id)

@@ -6,6 +6,7 @@ from app.core.dependencies import get_db
 from app.repository.group import group_repository
 from app.schemas.group import GroupShow, GroupCreate, GroupUpdate
 from app.core.dependencies import auth_security
+from app.core.config import settings
 
 
 class GroupRouter:
@@ -17,8 +18,8 @@ class GroupRouter:
         self.router.add_api_route("/{id}", self.update_group, response_model=GroupShow, methods=["PUT"])
         self.router.add_api_route("/{id}", self.delete_group, response_model=GroupShow, methods=["DELETE"])
 
-    async def show_groups(self, db: Session = Depends(get_db)):
-        return group_repository.get_multi(db)
+    async def show_groups(self, db: Session = Depends(get_db), page: int = 1, c: int = settings.DEFAULT_PAGE_SIZE):
+        return group_repository.get_multi(db, skip=(page - 1) * c, limit=c)
 
     async def show_group(self, id: int, db: Session = Depends(get_db)):
         return group_repository.get_or_404(db, id)

@@ -15,6 +15,8 @@ class Settings(BaseSettings):
     POSTGRES_DB: str
     DATABASE_URI: Optional[str] = None
 
+    DEFAULT_PAGE_SIZE: Optional[int] = 100
+
     @field_validator("DATABASE_URI")
     def assemble_db_connection(cls, v: Optional[str], info: FieldValidationInfo) -> str:
         user = info.data.get("POSTGRES_USER")
