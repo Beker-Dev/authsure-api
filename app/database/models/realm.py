@@ -6,7 +6,7 @@ from .base import Base
 
 class Realm(Base):
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(100), nullable=False)
+    name = Column(String(100), nullable=False, unique=True)
 
     users = relationship("User", back_populates="realm", cascade="all, delete-orphan")
     clients = relationship("Client", back_populates="realm", cascade="all, delete-orphan")

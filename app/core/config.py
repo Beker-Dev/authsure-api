@@ -17,6 +17,10 @@ class Settings(BaseSettings):
 
     DEFAULT_PAGE_SIZE: Optional[int] = 100
 
+    DEFAULT_USERNAME: str
+    DEFAULT_PASSWORD: str
+    DEFAULT_EMAIL: str
+
     @field_validator("DATABASE_URI")
     def assemble_db_connection(cls, v: Optional[str], info: FieldValidationInfo) -> str:
         user = info.data.get("POSTGRES_USER")

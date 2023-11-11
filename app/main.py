@@ -9,9 +9,12 @@ from app.routes import router
 from app.core.config import settings
 from app.database.db import engine
 from app.database.models.base import Base
+from app.utils.database_utils.populate_database import PopulateDatabaseDefaultInstances
+
 
 def assemble_database():
     Base.metadata.create_all(bind=engine)
+    PopulateDatabaseDefaultInstances().populate()
 
 
 def get_application():

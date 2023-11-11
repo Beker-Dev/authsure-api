@@ -17,6 +17,8 @@ from app.schemas.role import RoleCreate
 from app.schemas.group import GroupCreate
 from app.schemas.client import ClientCreate
 from app.schemas.realm import RealmCreate
+from app.core.dependencies import get_db
+from app.core.config import settings
 
 
 class PopulateDatabase:
@@ -117,8 +119,81 @@ class PopulateDatabase:
             self.__populate_roles,
             self.__populate_groups,
             self.__populate_users,
-            self.__populate_user_admin,
+            # self.__populate_user_admin,
             self.__populate_sessions,
         ]
 
         [m() for m in methods]
+
+
+class PopulateDatabaseDefaultInstances:
+    def __init__(self):
+        self.db_session = next(get_db())
+        self.faker = Faker(locale='PT-BR')
+        self.user = None
+        self.client = None
+        self.realm = None
+        self.roles = list()
+        self.groups = list()
+
+    def __populate_user(self):
+        self.user = user_repository.create(
+            self.db_session,
+            UserCreate(
+                username=settings.DEFAULT_USERNAME,
+                password=settings.DEFAULT_PASSWORD,
+                email=settings.DEFAULT_EMAIL,
+                realm_id=self.realm.id
+            )
+        )
+
+    def __populate_realm(self):
+        self.realm = realm_repository.create(
+            self.db_session,
+            RealmCreate(
+                name="AuthSure"
+            )
+        )
+
+    def __populate_client(self):
+        self.client = client_repository.create(
+            self.db_session,
+            ClientCreate(
+                name="AuthSureAdmin",
+                description="AuthSure Admin Client",
+                key="authsureadmin",
+                secret=self.faker.password(),
+                realm_id=self.realm.id
+            )
+        )
+
+    def __populate_role(self):
+        self.role = role_repository.create(
+            self.db_session,
+            RoleCreate(
+                name=self.client.name,
+            )
+        )
+
+    def __populate_group(self):
+        self.group = group_repository.create(
+            self.db_session,
+            GroupCreate(
+                name=self.client.name,
+            )
+        )
+
+    def populate(self):
+        methods = [
+            self.__populate_realm,
+            self.__populate_client,
+            self.__populate_role,
+            self.__populate_group,
+            self.__populate_user,
+        ]
+
+        for m in methods:
+            try:
+                m()
+            except:
+                ...
