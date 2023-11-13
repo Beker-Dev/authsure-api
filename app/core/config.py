@@ -21,6 +21,13 @@ class Settings(BaseSettings):
     DEFAULT_PASSWORD: str
     DEFAULT_EMAIL: str
 
+    DEFAULT_REALM_NAME: str
+
+    DEFAULT_CLIENT_NAME: str
+    DEFAULT_CLIENT_DESCRIPTION: str
+    DEFAULT_CLIENT_KEY: str
+    DEFAULT_CLIENT_SECRET: str
+
     @field_validator("DATABASE_URI")
     def assemble_db_connection(cls, v: Optional[str], info: FieldValidationInfo) -> str:
         user = info.data.get("POSTGRES_USER")

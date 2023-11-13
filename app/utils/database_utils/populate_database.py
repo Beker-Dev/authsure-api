@@ -151,7 +151,7 @@ class PopulateDatabaseDefaultInstances:
         self.realm = realm_repository.create(
             self.db_session,
             RealmCreate(
-                name="AuthSure"
+                name=settings.DEFAULT_REALM_NAME
             )
         )
 
@@ -159,27 +159,31 @@ class PopulateDatabaseDefaultInstances:
         self.client = client_repository.create(
             self.db_session,
             ClientCreate(
-                name="AuthSureAdmin",
-                description="AuthSure Admin Client",
-                key="authsureadmin",
-                secret=self.faker.password(),
+                name=settings.DEFAULT_CLIENT_NAME,
+                description=settings.DEFAULT_CLIENT_DESCRIPTION,
+                key=settings.DEFAULT_CLIENT_KEY,
+                secret=settings.DEFAULT_CLIENT_SECRET,
                 realm_id=self.realm.id
             )
         )
 
-    def __populate_role(self):
-        self.role = role_repository.create(
-            self.db_session,
-            RoleCreate(
-                name=self.client.name,
+    def __populate_roles(self):
+        self.roles.append(
+            role_repository.create(
+                self.db_session,
+                RoleCreate(
+                    name=self.client.name,
+                )
             )
         )
 
-    def __populate_group(self):
-        self.group = group_repository.create(
-            self.db_session,
-            GroupCreate(
-                name=self.client.name,
+    def __populate_groups(self):
+        self.groups.append(
+            group_repository.create(
+                self.db_session,
+                GroupCreate(
+                    name=self.client.name,
+                )
             )
         )
 
@@ -187,8 +191,8 @@ class PopulateDatabaseDefaultInstances:
         methods = [
             self.__populate_realm,
             self.__populate_client,
-            self.__populate_role,
-            self.__populate_group,
+            self.__populate_roles,
+            self.__populate_groups,
             self.__populate_user,
         ]
 

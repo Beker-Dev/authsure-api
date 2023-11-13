@@ -19,17 +19,16 @@ class AuthenticationRouter:
         self.router.add_api_route("/login", self.login, methods=["POST"])
         self.router.add_api_route("/logout", self.logout, methods=["POST"])
         self.router.add_api_route("/refresh", self.refresh, methods=["POST"])
-        self.router.add_api_route("/client-login", self.client_login, methods=["POST"])
 
-    async def login(self, user: AuthenticationLogin, db: Session = Depends(get_db)) -> Token:
-        db_user = user_repository.find_by_authentication_login(db, user)
-        token = JWT().get_token({'user_id': db_user.id})
-
-        session_repository.inactivate_all_active_sessions_by_user_id(db, db_user.id)
-        session = SessionCreate(token=token.access, user_id=db_user.id)
-        session_repository.create(db, session)
-
-        return token
+    # async def login(self, user: AuthenticationLogin, db: Session = Depends(get_db)) -> Token:
+    #     db_user = user_repository.find_by_authentication_login(db, user)
+    #     token = JWT().get_token({'user_id': db_user.id})
+    #
+    #     session_repository.inactivate_all_active_sessions_by_user_id(db, db_user.id)
+    #     session = SessionCreate(token=token.access, user_id=db_user.id)
+    #     session_repository.create(db, session)
+    #
+    #     return token
 
     async def logout(self, db: Session = Depends(get_db), current_user: CurrentUser = Depends(auth_security)) -> None:
         user_id = JWT().jwt_token_validator(current_user.token).get('user_id')
@@ -43,7 +42,7 @@ class AuthenticationRouter:
         except JWTError as e:
             raise HTTPException(status_code=403, detail=str(e))
 
-    async def client_login(self, client: AuthenticationClientLogin, db: Session = Depends(get_db)) -> Token:
+    async def login(self, client: AuthenticationClientLogin, db: Session = Depends(get_db)) -> Token:
         # TODO: check if user has permission to access client
         # TODO: ADD DEFAULT INSTANCE FOR EACH ROOT OBJECT
 
