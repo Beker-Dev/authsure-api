@@ -11,6 +11,11 @@ class AuthenticationLogin(AuthenticationBase):
     pass
 
 
+class AuthenticationClientLogin(AuthenticationLogin):
+    key: str
+    secret: str
+
+
 class Token(BaseModel):
     access: Optional[str] = ""
     refresh: Optional[str] = ""
