@@ -5,6 +5,7 @@ from typing import List
 
 class GroupBase(BaseModel):
     name: str = Field(min_length=1, max_length=100)
+    realm_id: int
 
 
 class GroupCreate(GroupBase):

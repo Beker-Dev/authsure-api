@@ -8,6 +8,8 @@ from app.database.relationship import user_role, group_role
 class Role(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), nullable=False, unique=True)
+    realm_id = Column(Integer, ForeignKey('realm.id'), nullable=False)
+    realm = relationship("Realm", back_populates="roles", lazy="subquery")
 
     users = relationship("User", secondary=user_role, back_populates="roles")
     groups = relationship("Group", secondary=group_role, back_populates="roles")

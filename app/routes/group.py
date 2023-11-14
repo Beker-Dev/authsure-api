@@ -7,6 +7,10 @@ from app.repository.group import group_repository
 from app.schemas.group import GroupShow, GroupCreate, GroupUpdate, GroupShowPaginated
 from app.core.dependencies import auth_security
 from app.core.config import settings
+from app.utils.filters.query_filters import DefaultFilter
+from app.utils.repository_utils.filters import FilterJoin
+from app.database.models.group import Group
+from app.database.models.realm import Realm
 
 
 class GroupRouter:
@@ -20,12 +24,16 @@ class GroupRouter:
 
     async def show_groups(
             self,
+            query: DefaultFilter = Depends(DefaultFilter),
             db: Session = Depends(get_db),
             page: int = 1,
             c: int = settings.DEFAULT_PAGE_SIZE
     ) -> GroupShowPaginated:
-        groups = group_repository.get_multi(db, skip=(page - 1) * c, limit=c)
-        last_page = group_repository.get_last_page(db, c)
+        filters = [FilterJoin(Realm, Realm.id, Group.realm_id, [query.realm], 'name')]
+        result_query = group_repository.get_by_join(db, filters_join=filters, skip=(page - 1) * c, limit=c)
+        last_page_query = group_repository.get_by_join(db, filters_join=filters)
+        groups = result_query.all()
+        last_page = group_repository.get_last_page(last_page_query, c)
         return GroupShowPaginated(
             groups=[GroupShow.model_validate(group) for group in groups],
             last_page=last_page,

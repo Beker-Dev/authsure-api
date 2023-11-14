@@ -5,6 +5,7 @@ from typing import List
 
 class RoleBase(BaseModel):
     name: str = Field(min_length=1, max_length=100)
+    realm_id: int
 
 
 class RoleCreate(RoleBase):
