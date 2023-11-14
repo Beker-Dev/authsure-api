@@ -7,7 +7,10 @@ from app.repository.session import session_repository
 from app.schemas.session import SessionShow, SessionCreate, SessionUpdate, SessionShowPaginated
 from app.core.dependencies import auth_security
 from app.core.config import settings
-
+from app.utils.filters.query_filters import DefaultFilter
+from app.utils.repository_utils.filters import FilterJoin
+from app.database.models.session import Session
+from app.database.models.realm import Realm
 
 class SessionRouter:
     def __init__(self):
@@ -20,12 +23,16 @@ class SessionRouter:
 
     async def show_sessions(
             self,
+            query: DefaultFilter = Depends(DefaultFilter),
             db: Session = Depends(get_db),
             page: int = 1,
             c: int = settings.DEFAULT_PAGE_SIZE
     ) -> SessionShowPaginated:
-        sessions = session_repository.get_multi(db, skip=(page - 1) * c, limit=c)
-        last_page = session_repository.get_last_page(db, c)
+        filters = [FilterJoin(Realm, Realm.id, Session.realm_id, [query.realm], 'name')]
+        result_query = session_repository.get_by_join(db, filters_join=filters, skip=(page - 1) * c, limit=c)
+        last_page_query = session_repository.get_by_join(db, filters_join=filters)
+        sessions = result_query.all()
+        last_page = session_repository.get_last_page(last_page_query, c)
         return SessionShowPaginated(
             sessions=[SessionShow.model_validate(session) for session in sessions],
             last_page=last_page,

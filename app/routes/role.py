@@ -7,6 +7,10 @@ from app.repository.role import role_repository
 from app.schemas.role import RoleShow, RoleCreate, RoleUpdate, RoleShowPaginated
 from app.core.dependencies import auth_security
 from app.core.config import settings
+from app.utils.filters.query_filters import DefaultFilter
+from app.utils.repository_utils.filters import FilterJoin
+from app.database.models.role import Role
+from app.database.models.realm import Realm
 
 
 class RoleRouter:
@@ -20,12 +24,16 @@ class RoleRouter:
 
     async def show_roles(
             self,
+            query: DefaultFilter = Depends(DefaultFilter),
             db: Session = Depends(get_db),
             page: int = 1,
             c: int = settings.DEFAULT_PAGE_SIZE
     ) -> RoleShowPaginated:
-        roles = role_repository.get_multi(db, skip=(page - 1) * c, limit=c)
-        last_page = role_repository.get_last_page(db, c)
+        filters = [FilterJoin(Realm, Realm.id, Role.realm_id, [query.realm], 'name')]
+        result_query = role_repository.get_by_join(db, filters_join=filters, skip=(page - 1) * c, limit=c)
+        last_page_query = role_repository.get_by_join(db, filters_join=filters)
+        roles = result_query.all()
+        last_page = role_repository.get_last_page(last_page_query, c)
         return RoleShowPaginated(
             roles=[RoleShow.model_validate(role) for role in roles],
             last_page=last_page,
