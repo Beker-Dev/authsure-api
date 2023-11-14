@@ -10,6 +10,11 @@ if __name__ == '__main__':
     parser.add_argument('--items-per-model', type=int, default=5, help='Number of items per model')
     arguments = parser.parse_args()
 
+    if arguments.reset_db:
+        print(f'{"Starting to reset database":-^50}')
+        PopulateDatabase.reset_database()
+        print(f'{"Finished to reset database":-^50}')
+
     if arguments.populate_db:
         print(f'{"Starting to populate database":-^50}')
         session = next(get_db())

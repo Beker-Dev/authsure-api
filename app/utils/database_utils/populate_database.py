@@ -33,7 +33,8 @@ class PopulateDatabase:
         self.clients = list()
         self.realms = list()
 
-    def __reset_database(self):
+    @classmethod
+    def reset_database(cls):
         Base.metadata.drop_all(bind=engine)
         Base.metadata.create_all(bind=engine)
 
@@ -111,7 +112,7 @@ class PopulateDatabase:
         )
 
     def populate(self, reset: bool = False):
-        self.__reset_database() if reset else ...
+        self.reset_database() if reset else ...
 
         methods = [
             self.__populate_realms,
@@ -173,6 +174,7 @@ class PopulateDatabaseDefaultInstances:
                 self.db_session,
                 RoleCreate(
                     name=self.client.name,
+                    realm_id=self.realm.id
                 )
             )
         )
@@ -183,6 +185,7 @@ class PopulateDatabaseDefaultInstances:
                 self.db_session,
                 GroupCreate(
                     name=self.client.name,
+                    realm_id=self.realm.id
                 )
             )
         )

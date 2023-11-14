@@ -10,4 +10,5 @@ class Realm(Base):
 
     users = relationship("User", back_populates="realm", cascade="all, delete-orphan")
     clients = relationship("Client", back_populates="realm", cascade="all, delete-orphan")
-    
+    groups = relationship("Group", back_populates="realm", cascade="all, delete-orphan")
+    roles = relationship("Role", back_populates="realm", cascade="all, delete-orphan")
