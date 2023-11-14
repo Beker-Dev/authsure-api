@@ -10,6 +10,7 @@ from app.core.config import settings
 from app.utils.filters.query_filters import DefaultFilter
 from app.utils.repository_utils.filters import FilterJoin
 from app.database.models.session import Session
+from app.database.models.user import User
 from app.database.models.realm import Realm
 
 class SessionRouter:
@@ -28,7 +29,10 @@ class SessionRouter:
             page: int = 1,
             c: int = settings.DEFAULT_PAGE_SIZE
     ) -> SessionShowPaginated:
-        filters = [FilterJoin(Realm, Realm.id, Session.realm_id, [query.realm], 'name')]
+        filters = [
+            FilterJoin(User, User.id, Session.user_id),
+            FilterJoin(Realm, Realm.id, User.realm_id, [query.realm], 'name')
+        ]
         result_query = session_repository.get_by_join(db, filters_join=filters, skip=(page - 1) * c, limit=c)
         last_page_query = session_repository.get_by_join(db, filters_join=filters)
         sessions = result_query.all()
