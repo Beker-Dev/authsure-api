@@ -7,6 +7,10 @@ from app.repository.client import client_repository
 from app.schemas.client import ClientShow, ClientCreate, ClientUpdate, ClientShowPaginated
 from app.core.dependencies import auth_security
 from app.core.config import settings
+from app.utils.filters.query_filters import DefaultFilter
+from app.utils.repository_utils.filters import FilterJoin
+from app.database.models.client import Client
+from app.database.models.realm import Realm
 
 
 class ClientRouter:
@@ -20,12 +24,16 @@ class ClientRouter:
 
     async def show_clients(
             self,
+            query: DefaultFilter = Depends(DefaultFilter),
             db: Session = Depends(get_db),
             page: int = 1,
             c: int = settings.DEFAULT_PAGE_SIZE
     ) -> ClientShowPaginated:
-        clients = client_repository.get_multi(db, skip=(page - 1) * c, limit=c)
-        last_page = client_repository.get_last_page(db, c)
+        filters = [FilterJoin(Realm, Realm.id, Client.realm_id, [query.realm], 'name')]
+        result_query = client_repository.get_by_join(db, filters_join=filters, skip=(page - 1) * c, limit=c)
+        last_page_query = client_repository.get_by_join(db, filters_join=filters)
+        clients = result_query.all()
+        last_page = client_repository.get_last_page(last_page_query, c)
         return ClientShowPaginated(
             clients=[ClientShow.model_validate(client) for client in clients],
             last_page=last_page,

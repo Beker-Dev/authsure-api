@@ -1,5 +1,5 @@
 from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, Query
 from sqlalchemy import or_, and_
 from fastapi.encoders import jsonable_encoder
 from fastapi import HTTPException
@@ -27,6 +27,8 @@ class RepositoryBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             filters: List[Filter] = None,
             filters_join: List[FilterJoin] = None,
             order_by=None,
+            skip: int = None,
+            limit: int = None
     ):
         query_filters = []
 
@@ -52,7 +54,7 @@ class RepositoryBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
                 )
                 query_filters = and_(query_filters, or_(*filter_conditions))
 
-        return query.filter(query_filters).order_by(order_by).all()
+        return query.filter(query_filters).order_by(order_by).offset(skip).limit(limit)
 
     @handle_session
     def get_by(self, db: Session, filters: dict, all: bool = False) -> Optional[ModelType]:
@@ -82,8 +84,8 @@ class RepositoryBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return db.query(self.model).count()
 
     @handle_session
-    def get_last_page(self, db: Session, limit: int) -> int:
-        results = db.query(self.model).count()
+    def get_last_page(self, db: Session | Query, limit: int) -> int:
+        results = db.query(self.model).count() if isinstance(db, Session) else db.count()
         return math.ceil(results / limit)
 
     @handle_session
