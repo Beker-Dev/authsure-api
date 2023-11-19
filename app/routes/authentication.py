@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Body, Query
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from jose.exceptions import JWTError
 
@@ -19,6 +20,7 @@ class AuthenticationRouter:
         self.router.add_api_route("/login", self.login, methods=["POST"])
         self.router.add_api_route("/logout", self.logout, methods=["POST"])
         self.router.add_api_route("/refresh", self.refresh, methods=["POST"])
+        self.router.add_api_route("/check", self.check_token, methods=["POST"])
 
     # async def login(self, user: AuthenticationLogin, db: Session = Depends(get_db)) -> Token:
     #     db_user = user_repository.find_by_authentication_login(db, user)
@@ -44,7 +46,6 @@ class AuthenticationRouter:
 
     async def login(self, client: AuthenticationClientLogin, db: Session = Depends(get_db)) -> Token:
         # TODO: check if user has permission to access client
-        # TODO: ADD DEFAULT INSTANCE FOR EACH ROOT OBJECT
 
         db_client = client_repository.find_by_authentication_client_login(db, client)
         user = AuthenticationLogin.model_construct(username=client.username, password=client.password)
@@ -57,6 +58,9 @@ class AuthenticationRouter:
         session_repository.create(db, session)
 
         return token
+
+    async def check_token(self, current_user: CurrentUser = Depends(auth_security)) -> JSONResponse:
+        return JSONResponse(JWT().jwt_token_validator(current_user.token))
 
 
 router = AuthenticationRouter().router
