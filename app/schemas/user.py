@@ -52,3 +52,7 @@ class UserPasswordUpdate(BaseModel):
 class CurrentUser(BaseModel):
     user: UserShow
     token: str
+
+
+class UserRecoverPassword(BaseModel):
+    email: EmailStr
