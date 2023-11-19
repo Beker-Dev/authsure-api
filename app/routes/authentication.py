@@ -46,7 +46,6 @@ class AuthenticationRouter:
 
     async def login(self, client: AuthenticationClientLogin, db: Session = Depends(get_db)) -> Token:
         # TODO: check if user has permission to access client
-        # TODO: ADD DEFAULT INSTANCE FOR EACH ROOT OBJECT
 
         db_client = client_repository.find_by_authentication_client_login(db, client)
         user = AuthenticationLogin.model_construct(username=client.username, password=client.password)
