@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import List, Optional, Any
 
 from app.utils.hash_utils import Password
+from .association import UserRoleShow, UserGroupShow
 
 
 class UserBase(BaseModel):
@@ -29,6 +30,8 @@ class UserShow(UserBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+    groups: Optional[List[UserGroupShow]] = []
+    roles: Optional[List[UserRoleShow]] = []
     created_at: datetime
     updated_at: datetime
 
