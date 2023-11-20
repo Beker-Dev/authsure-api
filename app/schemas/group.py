@@ -2,6 +2,8 @@ from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
 from typing import List, Optional, Union, Any
 
+from .association import GroupRoleShow, GroupUserShow
+
 
 class GroupBase(BaseModel):
     name: str = Field(min_length=1, max_length=100)
@@ -22,6 +24,8 @@ class GroupShow(GroupBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+    users: Optional[List[GroupUserShow]] = []
+    roles: Optional[List[GroupRoleShow]] = []
     created_at: datetime
     updated_at: datetime
 
