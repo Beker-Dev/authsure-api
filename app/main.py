@@ -11,6 +11,8 @@ from app.database.db import engine
 from app.database.models.base import Base
 from app.utils.database_utils.populate_database import PopulateDatabaseDefaultInstances
 
+from app.utils.repository_utils.get_repository import get_repository_by_name
+
 
 def assemble_database():
     Base.metadata.create_all(bind=engine)

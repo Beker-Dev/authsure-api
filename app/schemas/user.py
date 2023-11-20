@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, ConfigDict, EmailStr, field_validator
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 
 from app.utils.hash_utils import Password
 
@@ -9,6 +9,8 @@ class UserBase(BaseModel):
     username: str = Field(min_length=1, max_length=100)
     email: EmailStr
     realm_id: int
+    groups: Optional[List[int]] = []
+    roles: Optional[List[int]] = []
 
 
 class UserCreate(UserBase):
