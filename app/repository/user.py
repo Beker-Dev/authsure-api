@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
+from fastapi.encoders import jsonable_encoder
 
 from .base import RepositoryBase
 from app.database.models.user import User
@@ -32,6 +33,18 @@ class UserRepository(RepositoryBase[User, UserCreate, UserUpdate]):
         obj_in.groups = groups
         obj_in.roles = roles
         return super().create_with_association(db, obj_in)
+
+    def update(self, db: Session, db_obj: User, obj_in: UserUpdate) -> User:
+        group_repository = get_repository_by_name("group", "group_repository")
+        role_repository = get_repository_by_name("role", "role_repository")
+        groups = [group_repository.get(db, group_id) for group_id in obj_in.groups]
+        roles = [role_repository.get(db, role_id) for role_id in obj_in.roles]
+        obj_in.groups = groups
+        obj_in.roles = roles
+        custom_obj_data = jsonable_encoder(db_obj)
+        custom_obj_data["groups"] = jsonable_encoder(db_obj.groups)
+        custom_obj_data["roles"] = jsonable_encoder(db_obj.roles)
+        return super().update(db, db_obj, obj_in, custom_obj_data)
 
 
 user_repository = UserRepository(User)
