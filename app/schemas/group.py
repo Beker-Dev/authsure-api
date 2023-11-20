@@ -1,13 +1,13 @@
 from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Any
 
 
 class GroupBase(BaseModel):
     name: str = Field(min_length=1, max_length=100)
     realm_id: int
-    users: Optional[List[int]] = []
-    roles: Optional[List[int]] = []
+    users: Optional[List[Any]] = []
+    roles: Optional[List[Any]] = []
 
 
 class GroupCreate(GroupBase):

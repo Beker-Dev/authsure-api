@@ -37,11 +37,9 @@ class AuthenticationRouter:
         user_id = JWT().jwt_token_validator(current_user.token).get('user_id')
         session_repository.inactivate_all_active_sessions_by_user_id(db, user_id)
 
-    async def refresh(self, refresh_token: Token, current_user: CurrentUser = Depends(auth_security)) -> Token:
+    async def refresh(self, refresh_token: Token) -> Token:
         try:
-            token = JWT().refresh_token(refresh_token.refresh)
-            current_user.token = token.access
-            return token
+            return JWT().refresh_token(refresh_token.refresh)
         except JWTError as e:
             raise HTTPException(status_code=403, detail=str(e))
 

@@ -28,7 +28,8 @@ def auth_security(token: str = Depends(OAUTH2_SCHEME), db: Session = Depends(get
         else:
             user = user_repository.get(db, id=session.user_id)
             return CurrentUser(token=token, user=user)
-    except:
+    except Exception as e:
+        print('error auth security', type(e), e)
         raise HTTPException(status_code=401, detail='Invalid token')
 
 
