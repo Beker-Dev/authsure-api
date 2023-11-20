@@ -2,9 +2,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from app.utils.tests import set_test_environments
-set_test_environments()
-
 from app.routes import router
 from app.core.config import settings
 from app.database.db import engine
