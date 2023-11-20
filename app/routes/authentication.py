@@ -46,14 +46,12 @@ class AuthenticationRouter:
             raise HTTPException(status_code=403, detail=str(e))
 
     async def login(self, client: AuthenticationClientLogin, db: Session = Depends(get_db)) -> Token:
-        # TODO: check if user has permission to access client
-
         db_client = client_repository.find_by_authentication_client_login(db, client)
         user = AuthenticationLogin.model_construct(username=client.username, password=client.password)
 
         db_user = user_repository.find_by_authentication_login(db, user)
 
-        check_permissions(db, db_user, db_client)
+        check_permissions(db_user, db_client)
 
         token = JWT().get_token({'user_id': db_user.id, 'client_id': db_client.id})
 

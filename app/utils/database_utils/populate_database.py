@@ -204,8 +204,6 @@ class PopulateDatabaseDefaultInstances:
 
         for m in methods:
             try:
-                print('populating ', m.__name__)
                 m()
-            except Exception as e:
-                print('error: ', type(e), e)
+            except:
                 ...
