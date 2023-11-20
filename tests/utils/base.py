@@ -18,12 +18,16 @@ class TestBase(TestCase):
     token = None
 
     def setUp(self):
-        self.reset_database()
+        # self.reset_database()
         self.db_instance = next(get_db())
-        self.default_user = create_default_user(self.db_instance)
         self.token = self.client.post(
             '/api/auth/login',
-            json={"username": self.default_user.username, "password": "admin.admin"}
+            json={
+                "username": settings.DEFAULT_USERNAME,
+                "password": settings.DEFAULT_PASSWORD,
+                "key": settings.DEFAULT_CLIENT_KEY,
+                "secret": settings.DEFAULT_CLIENT_SECRET,
+            }
         ).json()['access']
 
     def tearDown(self):
