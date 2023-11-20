@@ -1,15 +1,17 @@
+from typing import List
+
 from sqlalchemy import Column, Integer, ForeignKey, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Mapped
 
 from .base import Base
 from app.database.relationship import user_group, group_role
 
 
 class Group(Base):
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(100), nullable=False, unique=True)
-    realm_id = Column(Integer, ForeignKey('realm.id'), nullable=False)
-    realm = relationship("Realm", back_populates="groups", lazy="subquery")
+    id: Mapped[int] = Column(Integer, primary_key=True, index=True)
+    name: Mapped[str] = Column(String(100), nullable=False, unique=True)
+    realm_id: Mapped[int] = Column(Integer, ForeignKey('realm.id'), nullable=False)
+    realm: Mapped["Realm"] = relationship("Realm", back_populates="groups", lazy="subquery")
 
-    users = relationship("User", secondary=user_group, back_populates="groups")
-    roles = relationship("Role", secondary=group_role, back_populates="groups")
+    users: Mapped[List["User"]] = relationship("User", secondary=user_group, back_populates="groups")
+    roles: Mapped[List["Role"]] = relationship("Role", secondary=group_role, back_populates="groups")

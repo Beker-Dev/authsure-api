@@ -12,6 +12,7 @@ from app.schemas.user import CurrentUser
 from app.core.dependencies import get_db
 from app.utils.authentication.jwt import JWT
 from app.core.dependencies import auth_security
+from app.utils.authentication.permissions import check_permissions
 
 
 class AuthenticationRouter:
@@ -45,12 +46,13 @@ class AuthenticationRouter:
             raise HTTPException(status_code=403, detail=str(e))
 
     async def login(self, client: AuthenticationClientLogin, db: Session = Depends(get_db)) -> Token:
-        # TODO: check if user has permission to access client
-
         db_client = client_repository.find_by_authentication_client_login(db, client)
         user = AuthenticationLogin.model_construct(username=client.username, password=client.password)
 
         db_user = user_repository.find_by_authentication_login(db, user)
+
+        check_permissions(db_user, db_client)
+
         token = JWT().get_token({'user_id': db_user.id, 'client_id': db_client.id})
 
         session_repository.inactivate_all_active_sessions_by_user_id(db, db_user.id)

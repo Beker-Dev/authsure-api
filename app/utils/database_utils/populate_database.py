@@ -144,7 +144,8 @@ class PopulateDatabaseDefaultInstances:
                 username=settings.DEFAULT_USERNAME,
                 password=settings.DEFAULT_PASSWORD,
                 email=settings.DEFAULT_EMAIL,
-                realm_id=self.realm.id
+                realm_id=self.realm.id,
+                roles=[role.id for role in self.roles],
             )
         )
 
@@ -185,7 +186,9 @@ class PopulateDatabaseDefaultInstances:
                 self.db_session,
                 GroupCreate(
                     name=self.client.name,
-                    realm_id=self.realm.id
+                    realm_id=self.realm.id,
+                    users=[self.user.id],
+                    roles=[role.id for role in self.roles]
                 )
             )
         )
@@ -195,8 +198,8 @@ class PopulateDatabaseDefaultInstances:
             self.__populate_realm,
             self.__populate_client,
             self.__populate_roles,
-            self.__populate_groups,
             self.__populate_user,
+            self.__populate_groups,
         ]
 
         for m in methods:
