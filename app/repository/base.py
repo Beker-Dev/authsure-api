@@ -113,8 +113,9 @@ class RepositoryBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db: Session,
         db_obj: ModelType,
         obj_in: Union[UpdateSchemaType, Dict[str, Any]],
+        custom_obj_data: Optional[Dict[str, Any]] = None,
     ) -> ModelType:
-        obj_data = jsonable_encoder(db_obj)
+        obj_data = jsonable_encoder(db_obj) if not custom_obj_data else custom_obj_data
         update_data = (
             obj_in if isinstance(obj_in, dict) else obj_in.dict(exclude_unset=True)
         )
