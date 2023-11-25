@@ -29,6 +29,6 @@ class AuthenticationClientLogin(AuthenticationLogin):
 
 
 class Token(BaseModel):
-    access: Optional[str] = ""
-    refresh: Optional[str] = ""
+    access: str
+    refresh: str
     token_type: Optional[str] = ""
