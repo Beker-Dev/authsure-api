@@ -18,9 +18,9 @@ class SessionRouter:
         self.router = APIRouter(tags=['Sessions'], prefix='/sessions', dependencies=[Depends(auth_security)])
         self.router.add_api_route('', self.show_sessions, response_model=SessionShowPaginated, methods=['GET'])
         self.router.add_api_route('/{id}', self.show_session, response_model=SessionShow, methods=['GET'])
-        self.router.add_api_route('', self.create_session, response_model=SessionShow, methods=['POST'])
-        self.router.add_api_route('/{id}', self.update_session, response_model=SessionShow, methods=['PUT'])
-        self.router.add_api_route('/{id}', self.delete_session, response_model=SessionShow, methods=['DELETE'])
+        # self.router.add_api_route('', self.create_session, response_model=SessionShow, methods=['POST'])
+        # self.router.add_api_route('/{id}', self.update_session, response_model=SessionShow, methods=['PUT'])
+        # self.router.add_api_route('/{id}', self.delete_session, response_model=SessionShow, methods=['DELETE'])
 
     async def show_sessions(
             self,
