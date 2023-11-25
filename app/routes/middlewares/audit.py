@@ -19,10 +19,8 @@ class Audit:
                 obj_in=AuditCreate(
                     url=str(request.url),
                     method=request.method,
-                    headers=[str({header[0]: header[1]}) for header in request.headers.items()],
                     status=response.status_code,
-                    client_id=db_session.client_id,
-                    user_id=db_session.user_id
+                    session_id=db_session.id
                 )
             )
             db.close()

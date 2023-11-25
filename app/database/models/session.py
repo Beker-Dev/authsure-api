@@ -13,3 +13,4 @@ class Session(Base):
 
     user: Mapped["User"] = relationship('User', back_populates='sessions', lazy='subquery')
     client: Mapped["Client"] = relationship('Client', back_populates='sessions', lazy='subquery')
+    audits: Mapped["Audit"] = relationship('Audit', back_populates='session')

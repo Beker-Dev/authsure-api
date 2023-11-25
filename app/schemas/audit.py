@@ -5,10 +5,8 @@ from datetime import datetime
 class AuditBase(BaseModel):
     url: str = Field(min_length=1, max_length=150)
     method: str = Field(min_length=1, max_length=10)
-    headers: list[str]
     status: int
-    client_id: int
-    user_id: int
+    session_id: int
 
 
 class AuditCreate(AuditBase):
