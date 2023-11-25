@@ -7,7 +7,7 @@ from app.schemas.authentication import AuthenticationLogin, AuthenticationClient
 from app.repository.user import user_repository
 from app.repository.client import client_repository
 from app.repository.session import session_repository
-from app.schemas.session import SessionCreate
+from app.schemas.session import SessionCreate, SessionUpdate
 from app.schemas.user import CurrentUser
 from app.core.dependencies import get_db
 from app.utils.authentication.jwt import JWT
@@ -37,11 +37,26 @@ class AuthenticationRouter:
         user_id = JWT().jwt_token_validator(current_user.token).get('user_id')
         session_repository.inactivate_all_active_sessions_by_user_id(db, user_id)
 
-    async def refresh(self, refresh_token: Token) -> Token:
+    async def refresh(self, refresh_token: Token, db: Session = Depends(get_db)) -> Token:
         try:
-            return JWT().refresh_token(refresh_token.refresh)
+            refreshed_token = JWT().refresh_token(refresh_token.refresh)
+            db_session = session_repository.get_by(db, {'token': refresh_token.access, 'is_active': True})
+            session_repository.inactivate_all_active_sessions_by_user_id(db, db_session.user_id)
+            session_repository.update(
+                db,
+                db_session,
+                SessionUpdate(
+                    token=refreshed_token.access,
+                    user_id=db_session.user_id,
+                    client_id=db_session.client_id,
+                    is_active=True
+                )
+            )
+            return refreshed_token
         except JWTError as e:
             raise HTTPException(status_code=403, detail=str(e))
+        except AttributeError as e:
+            raise HTTPException(status_code=403, detail="Invalid token information in records")
 
     async def login(self, client: AuthenticationClientLogin, db: Session = Depends(get_db)) -> Token:
         db_client = client_repository.find_by_authentication_client_login(db, client)
@@ -54,7 +69,7 @@ class AuthenticationRouter:
         token = JWT().get_token({'user_id': db_user.id, 'client_id': db_client.id})
 
         session_repository.inactivate_all_active_sessions_by_user_id(db, db_user.id)
-        session = SessionCreate(token=token.access, user_id=db_user.id)
+        session = SessionCreate(token=token.access, user_id=db_user.id, client_id=db_client.id)
         session_repository.create(db, session)
 
         return token

@@ -17,4 +17,4 @@ class User(Base):
 
     groups: Mapped[List["Group"]] = relationship("Group", secondary=user_group, back_populates="users")
     roles: Mapped[List["Role"]] = relationship("Role", secondary=user_role, back_populates="users")
-    audits: Mapped[List["Audit"]] = relationship("Audit", back_populates="user", lazy="subquery")
+    sessions: Mapped[List["Session"]] = relationship("Session", back_populates="user")
