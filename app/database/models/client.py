@@ -13,5 +13,7 @@ class Client(Base):
     key: Mapped[str] = Column(String(50), nullable=False, unique=True)
     secret: Mapped[str] = Column(String(255), nullable=False)
     realm_id: Mapped[int] = Column(Integer, ForeignKey('realm.id'), nullable=False)
+
     realm: Mapped["Realm"] = relationship("Realm", back_populates="clients", lazy="subquery")
     audits: Mapped[List["Audit"]] = relationship("Audit", back_populates="client", lazy="subquery")
+    sessions: Mapped[List["Session"]] = relationship("Session", back_populates="client", lazy="subquery")

@@ -54,7 +54,7 @@ class AuthenticationRouter:
         token = JWT().get_token({'user_id': db_user.id, 'client_id': db_client.id})
 
         session_repository.inactivate_all_active_sessions_by_user_id(db, db_user.id)
-        session = SessionCreate(token=token.access, user_id=db_user.id)
+        session = SessionCreate(token=token.access, user_id=db_user.id, client_id=db_client.id)
         session_repository.create(db, session)
 
         return token

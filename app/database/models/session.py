@@ -9,3 +9,7 @@ class Session(Base):
     token: Mapped[str] = Column(String(255), nullable=False)
     is_active: Mapped[bool] = Column(Boolean, nullable=False, default=True)
     user_id: Mapped[int] = Column(Integer, ForeignKey('user.id'), nullable=False)
+    client_id: Mapped[int] = Column(Integer, ForeignKey('client.id'), nullable=False)
+
+    user: Mapped["User"] = relationship('User', back_populates='sessions', lazy='subquery')
+    client: Mapped["Client"] = relationship('Client', back_populates='sessions', lazy='subquery')
