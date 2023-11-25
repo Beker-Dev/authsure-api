@@ -1,3 +1,5 @@
+from typing import List
+
 from sqlalchemy import Column, Integer, ForeignKey, String, Boolean, Text
 from sqlalchemy.orm import relationship, Mapped
 
@@ -12,3 +14,4 @@ class Client(Base):
     secret: Mapped[str] = Column(String(255), nullable=False)
     realm_id: Mapped[int] = Column(Integer, ForeignKey('realm.id'), nullable=False)
     realm: Mapped["Realm"] = relationship("Realm", back_populates="clients", lazy="subquery")
+    audits: Mapped[List["Audit"]] = relationship("Audit", back_populates="client", lazy="subquery")
