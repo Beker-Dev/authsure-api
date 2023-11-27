@@ -10,8 +10,9 @@ from app.core.config import settings
 from app.utils.filters.query_filters import DefaultFilter
 from app.utils.repository_utils.filters import FilterJoin
 from app.database.models.audit import Audit
-from app.database.models.client import Client
 from app.database.models.realm import Realm
+from app.database.models.user import User
+from app.database.models.session import Session
 
 
 class AuditRouter:
@@ -28,8 +29,9 @@ class AuditRouter:
             c: int = settings.DEFAULT_PAGE_SIZE
     ) -> AuditShowPaginated:
         filters = [
-            FilterJoin(Client, Client.id, Audit.client_id),
-            FilterJoin(Realm, Realm.id, Client.realm_id, [query.realm], 'name')
+            FilterJoin(Session, Session.id, Audit.session_id),
+            FilterJoin(User, User.id, Session.user_id),
+            FilterJoin(Realm, Realm.id, User.realm_id, [query.realm], 'name')
         ]
         result_query = audit_repository.get_by_join(db, filters_join=filters, skip=(page - 1) * c, limit=c)
         last_page_query = audit_repository.get_by_join(db, filters_join=filters)
