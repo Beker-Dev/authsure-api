@@ -2,9 +2,12 @@ from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
 from typing import List
 
+from app.database.enums.role_type import RoleType
+
 
 class RoleBase(BaseModel):
     name: str = Field(min_length=1, max_length=100)
+    types: List[RoleType]
     realm_id: int
 
 

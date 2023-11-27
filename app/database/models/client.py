@@ -4,6 +4,7 @@ from sqlalchemy import Column, Integer, ForeignKey, String, Boolean, Text
 from sqlalchemy.orm import relationship, Mapped
 
 from .base import Base
+from app.database.relationship.client_role import client_role
 
 
 class Client(Base):
@@ -16,3 +17,4 @@ class Client(Base):
 
     realm: Mapped["Realm"] = relationship("Realm", back_populates="clients", lazy="subquery")
     sessions: Mapped[List["Session"]] = relationship("Session", back_populates="client")
+    roles: Mapped[List["Role"]] = relationship("Role", secondary="client_role", back_populates="clients")

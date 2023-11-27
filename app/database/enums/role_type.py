@@ -1,0 +1,27 @@
+from enum import Enum
+
+
+class RoleType(Enum):
+    audit_view: str = 'audit_view'
+    client_view: str = 'client_view'
+    client_create: str = 'client_create'
+    client_update: str = 'client_update'
+    client_delete: str = 'client_delete'
+    group_view: str = 'group_view'
+    group_create: str = 'group_create'
+    group_update: str = 'group_update'
+    group_delete: str = 'group_delete'
+    realm_view: str = 'realm_view'
+    realm_create: str = 'realm_create'
+    realm_update: str = 'realm_update'
+    realm_delete: str = 'realm_delete'
+    role_view: str = 'role_view'
+    role_create: str = 'role_create'
+    role_update: str = 'role_update'
+    role_delete: str = 'role_delete'
+    session_view: str = 'session_view'
+    user_view: str = 'user_view'
+    user_create: str = 'user_create'
+    user_update: str = 'user_update'
+    user_delete: str = 'user_delete'
+    full_access: str = 'full_access'
