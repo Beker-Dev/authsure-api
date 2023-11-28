@@ -1,4 +1,4 @@
-from typing import Any, Generator, Dict
+from typing import Any, Generator, Dict, List
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
@@ -9,6 +9,7 @@ from app.utils.authentication.jwt import JWT
 from app.repository.session import session_repository
 from app.repository.user import user_repository
 from app.schemas.user import CurrentUser
+from app.database.enums.role_type import RoleType
 
 
 OAUTH2_SCHEME = OAuth2PasswordBearer(tokenUrl='/api/auth/login')
@@ -32,6 +33,17 @@ def auth_security(token: str = Depends(OAUTH2_SCHEME), db: Session = Depends(get
         print('error auth security', type(e), e)
         raise HTTPException(status_code=401, detail='Invalid token')
 
+
+def permissions_security(
+        permission_name: RoleType,
+) -> List[RoleType]:
+    def wrapper(current_user: CurrentUser = Depends(auth_security)):
+        user = current_user.user
+        user_permissions = [role_type for role in user.roles for role_type in role.types]
+        if RoleType.full_access in user_permissions or permission_name in user_permissions:
+            return user_permissions
+        raise HTTPException(403, f"User does not have permission to access. Missing: {permission_name}")
+    return wrapper
 
 # class CurrentUser:
 #     _instance = None

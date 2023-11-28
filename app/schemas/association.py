@@ -1,5 +1,7 @@
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
+from typing import List
+from app.database.enums.role_type import RoleType
 
 
 class UserGroupShow(BaseModel):
@@ -18,6 +20,7 @@ class UserRoleShow(BaseModel):
     id: int
     name: str
     realm_id: int
+    types: List[RoleType]
     created_at: datetime
     updated_at: datetime
 
@@ -28,6 +31,7 @@ class GroupRoleShow(BaseModel):
     id: int
     name: str
     realm_id: int
+    types: List[RoleType]
     created_at: datetime
     updated_at: datetime
 

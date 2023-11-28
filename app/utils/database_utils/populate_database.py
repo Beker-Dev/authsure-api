@@ -19,6 +19,7 @@ from app.schemas.client import ClientCreate
 from app.schemas.realm import RealmCreate
 from app.core.dependencies import get_db
 from app.core.config import settings
+from app.database.enums.role_type import RoleType
 
 
 class PopulateDatabase:
@@ -175,6 +176,7 @@ class PopulateDatabaseDefaultInstances:
                 self.db_session,
                 RoleCreate(
                     name=self.client.name,
+                    types=[RoleType.full_access],
                     realm_id=self.realm.id
                 )
             )

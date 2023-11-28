@@ -7,7 +7,7 @@ from app.repository.user import user_repository
 from app.schemas.user import UserShow, UserCreate, UserUpdate, UserPasswordUpdate, UserShowPaginated, UserRecoverPassword
 from app.utils.hash_utils.password import Password
 from app.utils.database_utils import PopulateDatabase
-from app.core.dependencies import auth_security
+from app.core.dependencies import auth_security, permissions_security
 from app.core.config import settings
 from app.utils.filters.query_filters import DefaultFilter
 from app.utils.repository_utils.filters import FilterJoin
@@ -16,18 +16,58 @@ from app.database.models.realm import Realm
 from app.utils.password.password_generator import password_generator
 from app.service.smtp.sender import send_email
 from app.utils.hash_utils.password import Password
+from app.database.enums.role_type import RoleType
 
 
 class UserRouter:
     def __init__(self):
         self.router = APIRouter(tags=['Users'], prefix='/users', dependencies=[Depends(auth_security)])
-        self.router.add_api_route("", self.show_users, response_model=UserShowPaginated, methods=["GET"])
-        self.router.add_api_route("/{id}", self.show_user, response_model=UserShow, methods=["GET"])
-        self.router.add_api_route("", self.create_user, response_model=UserShow, methods=["POST"])
-        self.router.add_api_route("/{id}", self.update_user, response_model=UserShow, methods=["PUT"])
-        self.router.add_api_route("/{id}", self.update_user_password, response_model=UserShow, methods=["PATCH"])
-        self.router.add_api_route("/{id}", self.delete_user, response_model=UserShow, methods=["DELETE"])
-        self.router.add_api_route("/recover-password", self.recover_password, methods=["POST"])
+        self.router.add_api_route(
+            "",
+            self.show_users,
+            response_model=UserShowPaginated,
+            methods=["GET"],
+            dependencies=[Depends(permissions_security(RoleType.user_view))]
+        )
+        self.router.add_api_route(
+            "/{id}",
+            self.show_user,
+            response_model=UserShow,
+            methods=["GET"],
+            dependencies=[Depends(permissions_security(RoleType.user_view))]
+        )
+        self.router.add_api_route(
+            "",
+            self.create_user,
+            response_model=UserShow,
+            methods=["POST"],
+            dependencies=[Depends(permissions_security(RoleType.user_create))]
+        )
+        self.router.add_api_route(
+            "/{id}",
+            self.update_user,
+            response_model=UserShow,
+            methods=["PUT"],
+            dependencies=[Depends(permissions_security(RoleType.user_update))]
+        )
+        self.router.add_api_route(
+            "/{id}",
+            self.update_user_password,
+            response_model=UserShow,
+            methods=["PATCH"]
+        )
+        self.router.add_api_route(
+            "/{id}",
+            self.delete_user,
+            response_model=UserShow,
+            methods=["DELETE"],
+            dependencies=[Depends(permissions_security(RoleType.user_delete))]
+        )
+        self.router.add_api_route(
+            "/recover-password",
+            self.recover_password,
+            methods=["POST"]
+        )
 
     async def show_users(
             self,

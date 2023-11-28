@@ -5,18 +5,49 @@ from typing import List
 from app.core.dependencies import get_db
 from app.repository.realm import realm_repository
 from app.schemas.realm import RealmShow, RealmCreate, RealmUpdate, RealmShowPaginated
-from app.core.dependencies import auth_security
+from app.core.dependencies import auth_security, permissions_security
 from app.core.config import settings
+from app.database.enums.role_type import RoleType
 
 
 class RealmRouter:
     def __init__(self):
         self.router = APIRouter(tags=['Realms'], prefix='/realms', dependencies=[Depends(auth_security)])
-        self.router.add_api_route("", self.show_realms, response_model=RealmShowPaginated, methods=["GET"])
-        self.router.add_api_route("/{id}", self.show_realm, response_model=RealmShow, methods=["GET"])
-        self.router.add_api_route("", self.create_realm, response_model=RealmShow, methods=["POST"])
-        self.router.add_api_route("/{id}", self.update_realm, response_model=RealmShow, methods=["PUT"])
-        self.router.add_api_route("/{id}", self.delete_realm, response_model=RealmShow, methods=["DELETE"])
+        self.router.add_api_route(
+            "",
+            self.show_realms,
+            response_model=RealmShowPaginated,
+            methods=["GET"],
+            dependencies=[Depends(permissions_security(RoleType.realm_view))]
+        )
+        self.router.add_api_route(
+            "/{id}",
+            self.show_realm,
+            response_model=RealmShow,
+            methods=["GET"],
+            dependencies=[Depends(permissions_security(RoleType.realm_view))]
+        )
+        self.router.add_api_route(
+            "",
+            self.create_realm,
+            response_model=RealmShow,
+            methods=["POST"],
+            dependencies=[Depends(permissions_security(RoleType.realm_create))]
+        )
+        self.router.add_api_route(
+            "/{id}",
+            self.update_realm,
+            response_model=RealmShow,
+            methods=["PUT"],
+            dependencies=[Depends(permissions_security(RoleType.realm_update))]
+        )
+        self.router.add_api_route(
+            "/{id}",
+            self.delete_realm,
+            response_model=RealmShow,
+            methods=["DELETE"],
+            dependencies=[Depends(permissions_security(RoleType.realm_delete))]
+        )
 
     async def show_realms(
             self,

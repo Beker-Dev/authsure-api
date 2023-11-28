@@ -5,22 +5,53 @@ from typing import List
 from app.core.dependencies import get_db
 from app.repository.group import group_repository
 from app.schemas.group import GroupShow, GroupCreate, GroupUpdate, GroupShowPaginated
-from app.core.dependencies import auth_security
+from app.core.dependencies import auth_security, permissions_security
 from app.core.config import settings
 from app.utils.filters.query_filters import DefaultFilter
 from app.utils.repository_utils.filters import FilterJoin
 from app.database.models.group import Group
 from app.database.models.realm import Realm
+from app.database.enums.role_type import RoleType
 
 
 class GroupRouter:
     def __init__(self):
         self.router = APIRouter(tags=['Groups'], prefix='/groups', dependencies=[Depends(auth_security)])
-        self.router.add_api_route("", self.show_groups, response_model=GroupShowPaginated, methods=["GET"])
-        self.router.add_api_route("/{id}", self.show_group, response_model=GroupShow, methods=["GET"])
-        self.router.add_api_route("", self.create_group, response_model=GroupShow, methods=["POST"])
-        self.router.add_api_route("/{id}", self.update_group, response_model=GroupShow, methods=["PUT"])
-        self.router.add_api_route("/{id}", self.delete_group, response_model=GroupShow, methods=["DELETE"])
+        self.router.add_api_route(
+            "",
+            self.show_groups,
+            response_model=GroupShowPaginated,
+            methods=["GET"],
+            dependencies=[Depends(permissions_security(RoleType.group_view))]
+        )
+        self.router.add_api_route(
+            "/{id}",
+            self.show_group,
+            response_model=GroupShow,
+            methods=["GET"],
+            dependencies=[Depends(permissions_security(RoleType.group_view))]
+        )
+        self.router.add_api_route(
+            "",
+            self.create_group,
+            response_model=GroupShow,
+            methods=["POST"],
+            dependencies=[Depends(permissions_security(RoleType.group_create))]
+        )
+        self.router.add_api_route(
+            "/{id}",
+            self.update_group,
+            response_model=GroupShow,
+            methods=["PUT"],
+            dependencies=[Depends(permissions_security(RoleType.group_update))]
+        )
+        self.router.add_api_route(
+            "/{id}",
+            self.delete_group,
+            response_model=GroupShow,
+            methods=["DELETE"],
+            dependencies=[Depends(permissions_security(RoleType.group_delete))]
+        )
 
     async def show_groups(
             self,

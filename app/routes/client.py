@@ -5,22 +5,52 @@ from typing import List
 from app.core.dependencies import get_db
 from app.repository.client import client_repository
 from app.schemas.client import ClientShow, ClientCreate, ClientUpdate, ClientShowPaginated
-from app.core.dependencies import auth_security
+from app.core.dependencies import auth_security, permissions_security
 from app.core.config import settings
 from app.utils.filters.query_filters import DefaultFilter
 from app.utils.repository_utils.filters import FilterJoin
 from app.database.models.client import Client
 from app.database.models.realm import Realm
-
+from app.database.enums.role_type import RoleType
 
 class ClientRouter:
     def __init__(self):
         self.router = APIRouter(tags=['Clients'], prefix='/clients', dependencies=[Depends(auth_security)])
-        self.router.add_api_route("", self.show_clients, response_model=ClientShowPaginated, methods=["GET"])
-        self.router.add_api_route("/{id}", self.show_client, response_model=ClientShow, methods=["GET"])
-        self.router.add_api_route("", self.create_client, response_model=ClientShow, methods=["POST"])
-        self.router.add_api_route("/{id}", self.update_client, response_model=ClientShow, methods=["PUT"])
-        self.router.add_api_route("/{id}", self.delete_client, response_model=ClientShow, methods=["DELETE"])
+        self.router.add_api_route(
+            "",
+            self.show_clients,
+            response_model=ClientShowPaginated,
+            methods=["GET"],
+            dependencies=[Depends(permissions_security(RoleType.client_view))]
+        )
+        self.router.add_api_route(
+            "/{id}",
+            self.show_client,
+            response_model=ClientShow,
+            methods=["GET"],
+            dependencies=[Depends(permissions_security(RoleType.client_view))]
+        )
+        self.router.add_api_route(
+            "",
+            self.create_client,
+            response_model=ClientShow,
+            methods=["POST"],
+            dependencies=[Depends(permissions_security(RoleType.client_create))]
+        )
+        self.router.add_api_route(
+            "/{id}",
+            self.update_client,
+            response_model=ClientShow,
+            methods=["PUT"],
+            dependencies=[Depends(permissions_security(RoleType.client_update))]
+        )
+        self.router.add_api_route(
+            "/{id}",
+            self.delete_client,
+            response_model=ClientShow,
+            methods=["DELETE"],
+            dependencies=[Depends(permissions_security(RoleType.client_delete))]
+        )
 
     async def show_clients(
             self,
