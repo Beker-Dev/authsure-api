@@ -5,7 +5,7 @@ from typing import List
 from app.core.dependencies import get_db
 from app.repository.audit import audit_repository
 from app.schemas.audit import AuditShow, AuditShowPaginated, AuditCreate, AuditUpdate
-from app.core.dependencies import auth_security
+from app.core.dependencies import auth_security, permissions_security
 from app.core.config import settings
 from app.utils.filters.query_filters import DefaultFilter
 from app.utils.repository_utils.filters import FilterJoin
@@ -13,13 +13,26 @@ from app.database.models.audit import Audit
 from app.database.models.realm import Realm
 from app.database.models.user import User
 from app.database.models.session import Session
+from app.database.enums.role_type import RoleType
 
 
 class AuditRouter:
     def __init__(self):
         self.router = APIRouter(tags=['audits'], prefix='/audits', dependencies=[Depends(auth_security)])
-        self.router.add_api_route("", self.show_audits, response_model=AuditShowPaginated, methods=["GET"])
-        self.router.add_api_route("/{id}", self.show_audit, response_model=AuditShow, methods=["GET"])
+        self.router.add_api_route(
+            "",
+            self.show_audits,
+            response_model=AuditShowPaginated,
+            methods=["GET"],
+            dependencies=[Depends(permissions_security(RoleType.audit_view))]
+        )
+        self.router.add_api_route(
+            "/{id}",
+            self.show_audit,
+            response_model=AuditShow,
+            methods=["GET"],
+            dependencies=[Depends(permissions_security(RoleType.audit_view))]
+        )
 
     async def show_audits(
             self,
