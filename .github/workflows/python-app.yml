@@ -79,6 +79,7 @@ jobs:
           echo "DEFAULT_CLIENT_SECRET=auth3.sur3!." >> .env
           echo "MANAGEMENT_EMAIL=${{ secrets.MANAGEMENT_EMAIL }}" >> .env
           echo "MANAGEMENT_EMAIL_PASSWORD=${{ secrets.MANAGEMENT_EMAIL_PASSWORD }}" >> .env
+          cat .env
       - name: Lint with flake8
         run: |
           # stop the build if there are Python syntax errors or undefined names
