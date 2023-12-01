@@ -1,6 +1,8 @@
 from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
-from typing import List
+from typing import List, Optional, Any
+
+from .association import ClientRoleShow
 
 
 class ClientBase(BaseModel):
@@ -9,6 +11,7 @@ class ClientBase(BaseModel):
     key: str = Field(min_length=1, max_length=50)
     secret: str = Field(min_length=1, max_length=255)
     realm_id: int
+    roles: Optional[List[Any]] = []
 
 
 class ClientCreate(ClientBase):
@@ -23,6 +26,7 @@ class ClientShow(ClientBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+    roles: Optional[List[ClientRoleShow]] = []
     created_at: datetime
     updated_at: datetime
 

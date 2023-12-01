@@ -1,14 +1,16 @@
 from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
-from typing import List
+from typing import List, Any, Optional
 
 from app.database.enums.role_type import RoleType
+from .association import RoleClientShow
 
 
 class RoleBase(BaseModel):
     name: str = Field(min_length=1, max_length=100)
-    types: List[RoleType]
     realm_id: int
+    types: List[RoleType]
+    clients: Optional[List[Any]] = []
 
 
 class RoleCreate(RoleBase):
@@ -23,6 +25,7 @@ class RoleShow(RoleBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+    clients: Optional[List[RoleClientShow]] = []
     created_at: datetime
     updated_at: datetime
 
