@@ -58,6 +58,27 @@ jobs:
           python -m pip install --upgrade pip
           pip install flake8 pytest
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Create .env file
+        run: |
+          echo "PROJECT_NAME=${{ secrets.PROJECT_NAME }}" >> .env
+          echo "BACKEND_CORS_ORIGINS=${{ secrets.BACKEND_CORS_ORIGINS }}" >> .env
+          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
+          echo "POSTGRES_SERVER=${{ secrets.POSTGRES_SERVER }}" >> .env
+          echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> .env
+          echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env
+          echo "DEFAULT_PAGE_SIZE=${{ secrets.DEFAULT_PAGE_SIZE }}" >> .env
+          echo "DEFAULT_PAGE_SIZE=${{ secrets.DEFAULT_PAGE_SIZE }}" >> .env
+          echo "DEFAULT_USERNAME=admin" >> .env
+          echo "DEFAULT_PASSWORD=admin.admin" >> .env
+          echo "DEFAULT_EMAIL=admin@mail.com" >> .env
+          echo "DEFAULT_REALM_NAME=AuthSure" >> .env
+          echo "DEFAULT_CLIENT_NAME=AuthSureAdmin" >> .env
+          echo "DEFAULT_CLIENT_DESCRIPTION=Manager" >> .env
+          echo "DEFAULT_CLIENT_KEY=authsureadmin" >> .env
+          echo "DEFAULT_CLIENT_SECRET=auth3.sur3!." >> .env
+          echo "MANAGEMENT_EMAIL=${{ secrets.MANAGEMENT_EMAIL }}" >> .env
+          echo "MANAGEMENT_EMAIL_PASSWORD=${{ secrets.MANAGEMENT_EMAIL_PASSWORD }}" >> .env
       - name: Lint with flake8
         run: |
           # stop the build if there are Python syntax errors or undefined names
