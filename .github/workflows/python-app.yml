@@ -68,15 +68,14 @@ jobs:
           echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> .env
           echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env
           echo "DEFAULT_PAGE_SIZE=${{ secrets.DEFAULT_PAGE_SIZE }}" >> .env
-          echo "DEFAULT_PAGE_SIZE=${{ secrets.DEFAULT_PAGE_SIZE }}" >> .env
-          echo "DEFAULT_USERNAME=admin" >> .env
-          echo "DEFAULT_PASSWORD=admin.admin" >> .env
-          echo "DEFAULT_EMAIL=admin@mail.com" >> .env
-          echo "DEFAULT_REALM_NAME=AuthSure" >> .env
-          echo "DEFAULT_CLIENT_NAME=AuthSureAdmin" >> .env
-          echo "DEFAULT_CLIENT_DESCRIPTION=Manager" >> .env
-          echo "DEFAULT_CLIENT_KEY=authsureadmin" >> .env
-          echo "DEFAULT_CLIENT_SECRET=auth3.sur3!." >> .env
+          echo "DEFAULT_USERNAME=${{ secrets.DEFAULT_USERNAME }}" >> .env
+          echo "DEFAULT_PASSWORD=${{ secrets.DEFAULT_PASSWORD }}" >> .env
+          echo "DEFAULT_EMAIL=${{ secrets.DEFAULT_EMAIL }}" >> .env
+          echo "DEFAULT_REALM_NAME=${{ secrets.DEFAULT_REALM_NAME }}" >> .env
+          echo "DEFAULT_CLIENT_NAME=${{ secrets.DEFAULT_CLIENT_NAME }}" >> .env
+          echo "DEFAULT_CLIENT_DESCRIPTION=${{ secrets.DEFAULT_CLIENT_DESCRIPTION }}" >> .env
+          echo "DEFAULT_CLIENT_KEY=${{ secrets.DEFAULT_CLIENT_KEY }}" >> .env
+          echo "DEFAULT_CLIENT_SECRET=${{ secrets.DEFAULT_CLIENT_SECRET }}" >> .env
           echo "MANAGEMENT_EMAIL=${{ secrets.MANAGEMENT_EMAIL }}" >> .env
           echo "MANAGEMENT_EMAIL_PASSWORD=${{ secrets.MANAGEMENT_EMAIL_PASSWORD }}" >> .env
           cat .env
