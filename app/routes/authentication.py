@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Body, Query
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from jose.exceptions import JWTError
@@ -55,7 +55,7 @@ class AuthenticationRouter:
             return refreshed_token
         except JWTError as e:
             raise HTTPException(status_code=403, detail=str(e))
-        except AttributeError as e:
+        except AttributeError:
             raise HTTPException(status_code=403, detail="Invalid token information in records")
 
     async def login(self, client: AuthenticationClientLogin, db: Session = Depends(get_db)) -> Token:

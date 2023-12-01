@@ -1,1 +1,1 @@
-from .password import Password
+from .password import Password  # noqa: F401

@@ -1,10 +1,9 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from typing import List
 
 from app.core.dependencies import get_db
 from app.repository.audit import audit_repository
-from app.schemas.audit import AuditShow, AuditShowPaginated, AuditCreate, AuditUpdate
+from app.schemas.audit import AuditShow, AuditShowPaginated
 from app.core.dependencies import auth_security, permissions_security
 from app.core.config import settings
 from app.utils.filters.query_filters import DefaultFilter
@@ -12,7 +11,6 @@ from app.utils.repository_utils.filters import FilterJoin
 from app.database.models.audit import Audit
 from app.database.models.realm import Realm
 from app.database.models.user import User
-from app.database.models.session import Session
 from app.database.enums.role_type import RoleType
 
 

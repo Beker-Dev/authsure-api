@@ -1,10 +1,9 @@
-from typing import Any, Generator, Dict, List
+from typing import Generator, List
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
 from app.database.db import SessionLocal
-from app.database.models.user import User
 from app.utils.authentication.jwt import JWT
 from app.repository.session import session_repository
 from app.repository.user import user_repository

@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
-from typing import List, Optional, Union, Any
+from typing import List, Optional, Any
 
 from .association import GroupRoleShow, GroupUserShow
 

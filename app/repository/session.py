@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 from .base import RepositoryBase
-from app.database.models.session import Session
+from app.database.models.session import Session  # noqa: F811
 from app.schemas.session import SessionCreate, SessionUpdate
 
 

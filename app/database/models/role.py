@@ -13,8 +13,8 @@ class Role(Base):
     name: Mapped[str] = Column(String(100), nullable=False, unique=True)
     types: Mapped[List[RoleType]] = Column(ARRAY(Enum(RoleType)), nullable=False)
     realm_id: Mapped[int] = Column(Integer, ForeignKey('realm.id'), nullable=False)
-    realm: Mapped["Realm"] = relationship("Realm", back_populates="roles", lazy="subquery")
+    realm: Mapped["Realm"] = relationship("Realm", back_populates="roles", lazy="subquery")  # noqa: F821
 
-    users: Mapped[List["User"]] = relationship("User", secondary=user_role, back_populates="roles")
-    groups: Mapped[List["Group"]] = relationship("Group", secondary=group_role, back_populates="roles")
-    clients: Mapped[List["Client"]] = relationship("Client", secondary=client_role, back_populates="roles")
+    users: Mapped[List["User"]] = relationship("User", secondary=user_role, back_populates="roles")  # noqa: F821
+    groups: Mapped[List["Group"]] = relationship("Group", secondary=group_role, back_populates="roles")  # noqa: F821
+    clients: Mapped[List["Client"]] = relationship("Client", secondary=client_role, back_populates="roles")  # noqa: # F821, E501

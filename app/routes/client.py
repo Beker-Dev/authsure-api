@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from typing import List
 
 from app.core.dependencies import get_db
 from app.repository.client import client_repository
@@ -12,6 +11,7 @@ from app.utils.repository_utils.filters import FilterJoin
 from app.database.models.client import Client
 from app.database.models.realm import Realm
 from app.database.enums.role_type import RoleType
+
 
 class ClientRouter:
     def __init__(self):

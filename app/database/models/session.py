@@ -11,6 +11,6 @@ class Session(Base):
     user_id: Mapped[int] = Column(Integer, ForeignKey('user.id'), nullable=False)
     client_id: Mapped[int] = Column(Integer, ForeignKey('client.id'), nullable=False)
 
-    user: Mapped["User"] = relationship('User', back_populates='sessions', lazy='subquery')
-    client: Mapped["Client"] = relationship('Client', back_populates='sessions', lazy='subquery')
-    audits: Mapped["Audit"] = relationship('Audit', back_populates='session')
+    user: Mapped["User"] = relationship('User', back_populates='sessions', lazy='subquery')  # noqa: F821
+    client: Mapped["Client"] = relationship('Client', back_populates='sessions', lazy='subquery')  # noqa: F821
+    audits: Mapped["Audit"] = relationship('Audit', back_populates='session')  # noqa: F821

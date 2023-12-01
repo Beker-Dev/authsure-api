@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
-from typing import List
 
 from app.core.dependencies import get_db
 from app.repository.user import user_repository
-from app.schemas.user import UserShow, UserCreate, UserUpdate, UserPasswordUpdate, UserShowPaginated, UserRecoverPassword
+from app.schemas.user import (
+    UserShow, UserCreate, UserUpdate, UserPasswordUpdate, UserShowPaginated, UserRecoverPassword
+)
 from app.utils.hash_utils.password import Password
-from app.utils.database_utils import PopulateDatabase
 from app.core.dependencies import auth_security, permissions_security
 from app.core.config import settings
 from app.utils.filters.query_filters import DefaultFilter
@@ -15,7 +15,6 @@ from app.database.models.user import User
 from app.database.models.realm import Realm
 from app.utils.password.password_generator import password_generator
 from app.service.smtp.sender import send_email
-from app.utils.hash_utils.password import Password
 from app.database.enums.role_type import RoleType
 
 

@@ -1,6 +1,4 @@
-from typing import List
-
-from sqlalchemy import Column, Integer, ForeignKey, String, Boolean, ARRAY
+from sqlalchemy import Column, Integer, ForeignKey, String
 from sqlalchemy.orm import relationship, Mapped
 
 from .base import Base
@@ -12,4 +10,4 @@ class Audit(Base):
     method: Mapped[str] = Column(String(10), nullable=False)
     status: Mapped[int] = Column(Integer, nullable=False)
     session_id: Mapped[int] = Column(Integer, ForeignKey('session.id'), nullable=False)
-    session: Mapped["Session"] = relationship('Session', back_populates='audits', lazy='subquery')
+    session: Mapped["Session"] = relationship('Session', back_populates='audits', lazy='subquery')  # noqa: F821
