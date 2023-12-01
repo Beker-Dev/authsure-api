@@ -17,7 +17,7 @@ class GroupRepository(RepositoryBase[Group, GroupCreate, GroupUpdate]):
         obj_in.roles = roles
         return super().create_with_association(db, obj_in)
 
-    def update(self, db: Session, db_obj: User, obj_in: GroupUpdate) -> Group:
+    def update(self, db: Session, db_obj: Group, obj_in: GroupUpdate) -> Group:
         user_repository = get_repository_by_name("user", "user_repository")
         role_repository = get_repository_by_name("role", "role_repository")
         users = [user_repository.get(db, user_id) for user_id in obj_in.users]

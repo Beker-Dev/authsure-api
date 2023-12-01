@@ -15,7 +15,7 @@ class RoleRepository(RepositoryBase[Role, RoleCreate, RoleUpdate]):
         obj_in.clients = clients
         return super().create_with_association(db, obj_in)
 
-    def update(self, db: Session, db_obj: User, obj_in: RoleUpdate) -> Role:
+    def update(self, db: Session, db_obj: Role, obj_in: RoleUpdate) -> Role:
         client_repository = get_repository_by_name("client", "client_repository")
         clients = [client_repository.get(db, client_id) for client_id in obj_in.clients]
         obj_in.clients = clients
