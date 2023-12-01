@@ -45,3 +45,27 @@ class GroupUserShow(BaseModel):
     realm_id: int
     created_at: datetime
     updated_at: datetime
+
+
+class ClientRoleShow(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    realm_id: int
+    types: List[RoleType]
+    created_at: datetime
+    updated_at: datetime
+
+
+class RoleClientShow(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    description: str
+    key: str
+    secret: str
+    realm_id: int
+    created_at: datetime
+    updated_at: datetime
