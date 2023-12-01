@@ -14,6 +14,7 @@ class Filter:
         self.key = key
         self.values = values
 
+
 class FilterJoin:
     def __init__(
             self,

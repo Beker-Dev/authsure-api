@@ -1,1 +1,1 @@
-from .database_handler import *
+from .database_handler import *  # noqa

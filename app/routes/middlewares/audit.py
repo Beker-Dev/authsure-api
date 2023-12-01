@@ -1,4 +1,4 @@
-from fastapi import Request, Depends
+from fastapi import Request
 from typing import Callable, Any
 
 from app.repository.audit import audit_repository

@@ -13,8 +13,8 @@ class User(Base):
     password: Mapped[str] = Column(String(255), nullable=False)
     email: Mapped[str] = Column(String(255), nullable=False, unique=True)
     realm_id: Mapped[int] = Column(Integer, ForeignKey('realm.id'), nullable=False)
-    realm: Mapped["Realm"] = relationship("Realm", back_populates="users", lazy="subquery")
+    realm: Mapped["Realm"] = relationship("Realm", back_populates="users", lazy="subquery")  # noqa: F821
 
-    groups: Mapped[List["Group"]] = relationship("Group", secondary=user_group, back_populates="users")
-    roles: Mapped[List["Role"]] = relationship("Role", secondary=user_role, back_populates="users")
-    sessions: Mapped[List["Session"]] = relationship("Session", back_populates="user")
+    groups: Mapped[List["Group"]] = relationship("Group", secondary=user_group, back_populates="users")  # noqa: F821
+    roles: Mapped[List["Role"]] = relationship("Role", secondary=user_role, back_populates="users")  # noqa: F821
+    sessions: Mapped[List["Session"]] = relationship("Session", back_populates="user")  # noqa: F821

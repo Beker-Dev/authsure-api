@@ -1,10 +1,9 @@
-from fastapi import Request, Depends
+from fastapi import Request
 from fastapi.responses import JSONResponse
 from typing import Callable
 
 from app.utils.authentication.jwt import JWT
-from app.repository.session import session_repository
-from app.core.dependencies import get_db, CurrentUser
+from app.core.dependencies import CurrentUser
 
 
 class Authentication:

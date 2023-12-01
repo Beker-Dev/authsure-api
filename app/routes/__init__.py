@@ -1,6 +1,6 @@
 import os
 import importlib
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 
 
 router = APIRouter(prefix='/api')

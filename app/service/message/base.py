@@ -1,5 +1,5 @@
-import asyncio
 from aio_pika import connect, Message
+
 
 class MessageBroker:
     def __init__(self, connection_parameters, name_queue):

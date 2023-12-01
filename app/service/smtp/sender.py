@@ -9,4 +9,3 @@ def send_email(msg: str, user: User):
         smtp.starttls()
         smtp.login(user=settings.MANAGEMENT_EMAIL, password=settings.MANAGEMENT_EMAIL_PASSWORD)
         smtp.sendmail(settings.MANAGEMENT_EMAIL, user.email, msg)
-    

@@ -1,7 +1,7 @@
 from pydantic.alias_generators import to_snake
 from datetime import datetime
 from sqlalchemy import Column, DateTime
-from sqlalchemy.orm import as_declarative, declared_attr, declared_attr
+from sqlalchemy.orm import as_declarative, declared_attr
 
 
 @as_declarative()

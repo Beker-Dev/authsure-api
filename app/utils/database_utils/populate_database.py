@@ -207,5 +207,5 @@ class PopulateDatabaseDefaultInstances:
         for m in methods:
             try:
                 m()
-            except:
+            except Exception:
                 ...
