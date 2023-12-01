@@ -22,6 +22,7 @@ from app.database.enums.role_type import RoleType
 class UserRouter:
     def __init__(self):
         self.router = APIRouter(tags=['Users'], prefix='/users', dependencies=[Depends(auth_security)])
+        self.unsecure_router = APIRouter(tags=['Users'], prefix='/users')
         self.router.add_api_route(
             "",
             self.show_users,
@@ -63,11 +64,11 @@ class UserRouter:
             methods=["DELETE"],
             dependencies=[Depends(permissions_security(RoleType.user_delete))]
         )
-        # self.router.add_api_route(
-        #     "/recover-password",
-        #     self.recover_password,
-        #     methods=["POST"]
-        # )
+        self.unsecure_router.add_api_route(
+            "/recover-password",
+            self.recover_password,
+            methods=["POST"]
+        )
 
     async def show_users(
             self,
@@ -112,15 +113,16 @@ class UserRouter:
         db_user = user_repository.get_or_404(db, id)
         return user_repository.remove(db, id=db_user.id)
 
-    # async def recover_password(self, user: UserRecoverPassword, db: Session = Depends(get_db)) -> Response:
-    #     db_user = user_repository.get_by(db=db, filters={'email': user.email})
-    #     if not db_user:
-    #         raise HTTPException(422, "Email not found")
-    #     else:
-    #         new_password = password_generator()
-    #         user_repository.update_password(db, db_user, Password.encrypt(new_password))
-    #         send_email(f"\nYour new password is: {new_password}\n\n\nPlease, change it ASAP!", db_user)
-    #         return Response(f"Temporary password has been sent to {user.email}")
+    async def recover_password(self, user: UserRecoverPassword, db: Session = Depends(get_db)) -> Response:
+        db_user = user_repository.get_by(db=db, filters={'email': user.email})
+        if not db_user:
+            raise HTTPException(422, "Email not found")
+        else:
+            new_password = password_generator()
+            user_repository.update_password(db, db_user, Password.encrypt(new_password))
+            send_email(f"\nYour new password is: {new_password}\n\n\nPlease, change it ASAP!", db_user)
+            return Response(f"Temporary password has been sent to {user.email}")
 
 
-router = UserRouter().router
+router = UserRouter().unsecure_router
+router.include_router(UserRouter().router)
