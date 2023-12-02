@@ -12,6 +12,7 @@ from app.database.models.audit import Audit
 from app.database.models.realm import Realm
 from app.database.models.user import User
 from app.database.enums.role_type import RoleType
+from app.database.models.session import Session as SessionModel
 
 
 class AuditRouter:
@@ -40,8 +41,8 @@ class AuditRouter:
             c: int = settings.DEFAULT_PAGE_SIZE
     ) -> AuditShowPaginated:
         filters = [
-            FilterJoin(Session, Session.id, Audit.session_id),
-            FilterJoin(User, User.id, Session.user_id),
+            FilterJoin(SessionModel, SessionModel.id, Audit.session_id),
+            FilterJoin(User, User.id, SessionModel.user_id),
             FilterJoin(Realm, Realm.id, User.realm_id, [query.realm], 'name')
         ]
         result_query = audit_repository.get_by_join(db, filters_join=filters, skip=(page - 1) * c, limit=c)

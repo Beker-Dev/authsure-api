@@ -21,7 +21,7 @@ from app.database.enums.role_type import RoleType
 class UserRouter:
     def __init__(self):
         self.router = APIRouter(tags=['Users'], prefix='/users', dependencies=[Depends(auth_security)])
-        self.unsecure_router = APIRouter(tags=['Users'], prefix='/users')
+        self.unsecure_router = APIRouter(tags=['Users'])
         self.router.add_api_route(
             "",
             self.show_users,
@@ -64,7 +64,7 @@ class UserRouter:
             dependencies=[Depends(permissions_security(RoleType.user_delete))]
         )
         self.unsecure_router.add_api_route(
-            "/recover-password",
+            f"{self.router.prefix}/recover-password",
             self.recover_password,
             methods=["POST"]
         )
