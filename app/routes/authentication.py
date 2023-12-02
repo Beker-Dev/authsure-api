@@ -13,6 +13,7 @@ from app.core.dependencies import get_db
 from app.utils.authentication.jwt import JWT
 from app.core.dependencies import auth_security
 from app.utils.authentication.permissions import check_permissions
+from app.core.config import settings
 
 
 class AuthenticationRouter:
@@ -34,12 +35,18 @@ class AuthenticationRouter:
     #     return token
 
     async def logout(self, db: Session = Depends(get_db), current_user: CurrentUser = Depends(auth_security)) -> None:
-        user_id = JWT().jwt_token_validator(current_user.token).get('user_id')
+        user_id = JWT(
+                access_expires_minutes=settings.ACCESS_TOKEN_LIFETIME,
+                refresh_expires_minutes=settings.REFRESH_TOKEN_LIFETIME
+        ).jwt_token_validator(current_user.token).get('user_id')
         session_repository.inactivate_all_active_sessions_by_user_id(db, user_id)
 
     async def refresh(self, refresh_token: Token, db: Session = Depends(get_db)) -> Token:
         try:
-            refreshed_token = JWT().refresh_token(refresh_token.refresh)
+            refreshed_token = JWT(
+                access_expires_minutes=settings.ACCESS_TOKEN_LIFETIME,
+                refresh_expires_minutes=settings.REFRESH_TOKEN_LIFETIME
+            ).refresh_token(refresh_token.refresh)
             db_session = session_repository.get_by(db, {'token': refresh_token.access, 'is_active': True})
             session_repository.inactivate_all_active_sessions_by_user_id(db, db_session.user_id)
             session_repository.update(
@@ -66,7 +73,10 @@ class AuthenticationRouter:
 
         check_permissions(db_user, db_client)
 
-        token = JWT().get_token({'user_id': db_user.id, 'client_id': db_client.id})
+        token = JWT(
+                access_expires_minutes=settings.ACCESS_TOKEN_LIFETIME,
+                refresh_expires_minutes=settings.REFRESH_TOKEN_LIFETIME
+        ).get_token({'user_id': db_user.id, 'client_id': db_client.id})
 
         session_repository.inactivate_all_active_sessions_by_user_id(db, db_user.id)
         session = SessionCreate(token=token.access, user_id=db_user.id, client_id=db_client.id)
@@ -75,7 +85,12 @@ class AuthenticationRouter:
         return token
 
     async def check_token(self, current_user: CurrentUser = Depends(auth_security)) -> JSONResponse:
-        return JSONResponse(JWT().jwt_token_validator(current_user.token))
+        return JSONResponse(
+            JWT(
+                access_expires_minutes=settings.ACCESS_TOKEN_LIFETIME,
+                refresh_expires_minutes=settings.REFRESH_TOKEN_LIFETIME
+            ).jwt_token_validator(current_user.token)
+        )
 
 
 router = AuthenticationRouter().router
