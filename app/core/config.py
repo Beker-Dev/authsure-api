@@ -5,7 +5,7 @@ from pydantic_settings import BaseSettings, DotEnvSettingsSource, PydanticBaseSe
 
 class Settings(BaseSettings):
     PROJECT_NAME: str
-    BACKEND_CORS_ORIGINS: List[str]
+    BACKEND_CORS_ORIGINS: List[str] | str
     ROOT_PATH: Optional[str] = None
 
     POSTGRES_SERVER: str
@@ -39,6 +39,12 @@ class Settings(BaseSettings):
         port = info.data.get("POSTGRES_PORT")
         db = info.data.get("POSTGRES_DB")
         return f"postgresql+psycopg2://{user}:{password}@{server}:{port}/{db}"
+
+    @field_validator("BACKEND_CORS_ORIGINS")
+    def validate_cors(cls, v: List[str] | str, info: FieldValidationInfo) -> List[str] | str:
+        if v == '__all__':
+            return ["*"]
+        return v
 
     @classmethod
     def settings_customise_sources(
