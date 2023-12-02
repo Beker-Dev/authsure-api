@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import List, Optional, Any
 
 from .association import ClientRoleShow
+from .realm import RealmShow
 
 
 class ClientBase(BaseModel):
@@ -26,6 +27,7 @@ class ClientShow(ClientBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+    realm: RealmShow
     roles: Optional[List[ClientRoleShow]] = []
     created_at: datetime
     updated_at: datetime
