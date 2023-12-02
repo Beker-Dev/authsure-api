@@ -166,7 +166,8 @@ class PopulateDatabaseDefaultInstances:
                 description=settings.DEFAULT_CLIENT_DESCRIPTION,
                 key=settings.DEFAULT_CLIENT_KEY,
                 secret=settings.DEFAULT_CLIENT_SECRET,
-                realm_id=self.realm.id
+                realm_id=self.realm.id,
+                roles=[role.id for role in self.roles]
             )
         )
 
@@ -175,7 +176,7 @@ class PopulateDatabaseDefaultInstances:
             role_repository.create(
                 self.db_session,
                 RoleCreate(
-                    name=self.client.name,
+                    name=self.faker.word(),
                     types=[RoleType.full_access],
                     realm_id=self.realm.id
                 )
@@ -198,8 +199,8 @@ class PopulateDatabaseDefaultInstances:
     def populate(self):
         methods = [
             self.__populate_realm,
-            self.__populate_client,
             self.__populate_roles,
+            self.__populate_client,
             self.__populate_user,
             self.__populate_groups,
         ]

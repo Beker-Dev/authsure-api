@@ -5,10 +5,11 @@ from app.database.models.client import Client
 
 
 def check_permissions(user: User, client: Client) -> bool:
-    user_roles = [role.name for role in user.roles]
-    user_group_roles = [role.name for group in user.groups for role in group.roles]
-    permissions = user_roles + user_group_roles
+    user_roles = [role for role in user.roles]
+    user_group_roles = [role for group in user.groups for role in group.roles]
+    user_permissions = user_roles + user_group_roles
 
-    if client.name in permissions:
-        return True
+    for role in client.roles:
+        if role in user_permissions:
+            return True
     raise HTTPException(403, "User does not have permission to access this client")
