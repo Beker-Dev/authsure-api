@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from jose import jwt
 
 from app.schemas.authentication import Token
@@ -20,8 +20,8 @@ class JWT:
     def __jwt_token_generator(self, token_type: str, expires_minutes: int, payload: dict = None) -> str:
         data = payload.copy() if payload is not None else {}
         data.update({
-            'iat': datetime.now(),
-            'exp': datetime.now() + timedelta(minutes=expires_minutes),
+            'iat': datetime.now(timezone.utc),
+            'exp': datetime.now(timezone.utc) + timedelta(minutes=expires_minutes),
             'type': token_type
         })
         return jwt.encode(data, self.__secret_key, algorithm=self.__algorithm)

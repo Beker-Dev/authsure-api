@@ -31,6 +31,9 @@ class Settings(BaseSettings):
     MANAGEMENT_EMAIL: str
     MANAGEMENT_EMAIL_PASSWORD: str
 
+    ACCESS_TOKEN_LIFETIME: Optional[int] = 30
+    REFRESH_TOKEN_LIFETIME: Optional[int] = 1440
+
     @field_validator("DATABASE_URI")
     def assemble_db_connection(cls, v: Optional[str], info: FieldValidationInfo) -> str:
         user = info.data.get("POSTGRES_USER")

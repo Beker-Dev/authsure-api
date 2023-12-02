@@ -9,6 +9,7 @@ from app.repository.session import session_repository
 from app.repository.user import user_repository
 from app.schemas.user import CurrentUser
 from app.database.enums.role_type import RoleType
+from app.core.config import settings
 
 
 OAUTH2_SCHEME = OAuth2PasswordBearer(tokenUrl='/api/auth/login')
@@ -21,7 +22,10 @@ def get_db() -> Generator:
 
 def auth_security(token: str = Depends(OAUTH2_SCHEME), db: Session = Depends(get_db)) -> CurrentUser:
     try:
-        JWT().jwt_token_validator(token)
+        JWT(
+            access_expires_minutes=settings.ACCESS_TOKEN_LIFETIME,
+            refresh_expires_minutes=settings.REFRESH_TOKEN_LIFETIME
+        ).jwt_token_validator(token)
         session = session_repository.get_by(db, {'token': token})
         if not session or not session.is_active:
             raise Exception
