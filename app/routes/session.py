@@ -11,6 +11,7 @@ from app.utils.repository_utils.filters import FilterJoin
 from app.database.models.user import User
 from app.database.models.realm import Realm
 from app.database.enums.role_type import RoleType
+from app.database.models.session import Session as SessionModel
 
 
 class SessionRouter:
@@ -42,7 +43,7 @@ class SessionRouter:
             c: int = settings.DEFAULT_PAGE_SIZE
     ) -> SessionShowPaginated:
         filters = [
-            FilterJoin(User, User.id, Session.user_id),
+            FilterJoin(User, User.id, SessionModel.user_id),
             FilterJoin(Realm, Realm.id, User.realm_id, [query.realm], 'name')
         ]
         result_query = session_repository.get_by_join(db, filters_join=filters, skip=(page - 1) * c, limit=c)

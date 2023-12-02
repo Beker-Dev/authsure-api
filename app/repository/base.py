@@ -1,6 +1,6 @@
 from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
 from sqlalchemy.orm import Session, Query
-from sqlalchemy import or_, and_
+from sqlalchemy import or_, and_, asc, desc
 from fastapi.encoders import jsonable_encoder
 from fastapi import HTTPException
 from pydantic import BaseModel
@@ -26,7 +26,8 @@ class RepositoryBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             db: Session,
             filters: List[Filter] = None,
             filters_join: List[FilterJoin] = None,
-            order_by=None,
+            order_by: str = "id",
+            order_asc: bool = False,
             skip: int = None,
             limit: int = None
     ):
@@ -54,7 +55,10 @@ class RepositoryBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
                 )
                 query_filters = and_(query_filters, or_(*filter_conditions))
 
-        return query.filter(query_filters).order_by(order_by).offset(skip).limit(limit)
+        ordering = asc if order_asc else desc
+        order_by_field = getattr(self.model, order_by)
+
+        return query.filter(query_filters).order_by(ordering(order_by_field)).offset(skip).limit(limit)
 
     @handle_session
     def get_by(self, db: Session, filters: dict, all: bool = False) -> Optional[ModelType]:
@@ -75,9 +79,11 @@ class RepositoryBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
     @handle_session
     def get_multi(
-        self, db: Session, skip: int = 0, limit: int = 100
+        self, db: Session, skip: int = 0, limit: int = 100, order_by: str = "id", order_asc: bool = False
     ) -> List[ModelType]:
-        return db.query(self.model).offset(skip).limit(limit).all()
+        ordering = asc if order_asc else desc
+        order_by_field = getattr(self.model, order_by)
+        return db.query(self.model).order_by(ordering(order_by_field)).offset(skip).limit(limit).all()
 
     @handle_session
     def get_count(self, db: Session) -> int:
