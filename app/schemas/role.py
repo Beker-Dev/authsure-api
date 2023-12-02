@@ -4,6 +4,7 @@ from typing import List, Any, Optional
 
 from app.database.enums.role_type import RoleType
 from .association import RoleClientShow
+from .realm import RealmShow
 
 
 class RoleBase(BaseModel):
@@ -25,6 +26,7 @@ class RoleShow(RoleBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+    realm: RealmShow
     clients: Optional[List[RoleClientShow]] = []
     created_at: datetime
     updated_at: datetime

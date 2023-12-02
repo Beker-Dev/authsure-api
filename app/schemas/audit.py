@@ -1,6 +1,8 @@
 from pydantic import BaseModel, ConfigDict, Field
 from datetime import datetime
 
+from .session import SessionShow
+
 
 class AuditBase(BaseModel):
     url: str = Field(min_length=1, max_length=150)
@@ -21,6 +23,7 @@ class AuditShow(AuditBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+    session: SessionShow
     created_at: datetime
     updated_at: datetime
 

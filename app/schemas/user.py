@@ -4,6 +4,7 @@ from typing import List, Optional, Any
 
 from app.utils.hash_utils import Password
 from .association import UserRoleShow, UserGroupShow
+from .realm import RealmShow
 
 
 class UserBase(BaseModel):
@@ -30,6 +31,7 @@ class UserShow(UserBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+    realm: RealmShow
     groups: Optional[List[UserGroupShow]] = []
     roles: Optional[List[UserRoleShow]] = []
     created_at: datetime

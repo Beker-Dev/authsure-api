@@ -2,6 +2,9 @@ from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
 from typing import List
 
+from .user import UserShow
+from .client import ClientShow
+
 
 class SessionBase(BaseModel):
     token: str = Field(min_length=1, max_length=255)
@@ -22,6 +25,8 @@ class SessionShow(SessionBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+    user: UserShow
+    client: ClientShow
     created_at: datetime
     updated_at: datetime
 

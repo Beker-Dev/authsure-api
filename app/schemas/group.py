@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import List, Optional, Any
 
 from .association import GroupRoleShow, GroupUserShow
+from .realm import RealmShow
 
 
 class GroupBase(BaseModel):
@@ -24,6 +25,7 @@ class GroupShow(GroupBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+    realm: RealmShow
     users: Optional[List[GroupUserShow]] = []
     roles: Optional[List[GroupRoleShow]] = []
     created_at: datetime
